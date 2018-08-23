@@ -1,0 +1,21 @@
+# es2015 source info
+.babelrc
+/src
+
+# teststuff
+/coverage
+/lib/__tests__
+
+# website docs
+/docs
+
+# misc
+.eslintignore
+.eslintrc.json
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+yarn-debug.log*
+yarn-error.log*
