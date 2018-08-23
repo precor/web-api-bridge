@@ -19,13 +19,13 @@
 If you're using `npm`:
 
 ```console
-npm install --save web-api-bridge
+npm install --save @precor/web-api-bridge
 ```
 
 or, if you're using `yarn`:
 
 ```console
-yarn add web-api-bridge
+yarn add @precor/web-api-bridge
 ```
 
 ## Documentation
