@@ -39,6 +39,7 @@ Coming ...
 ## Gotchas
 
 * Beware that messages passed before `onLoad` is called will probably not get through.
+* Type files for Flow and TypeScript are included but not used by our projects so they may have issues. Please submit an issue or better yet a pull request with corrections.
 
 ## History
 
