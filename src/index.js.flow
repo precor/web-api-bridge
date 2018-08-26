@@ -16,6 +16,7 @@ export type Message = {
   args: Array<mixed>,
   wantResult: boolean
 };
+
 /**
   * `Listener` functions can monitor all `Message` objects exchanged between `WebApiBridge`
   * objects. `Listener` functions are attached to WebApiBridge` objects by setting the

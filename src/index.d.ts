@@ -2,6 +2,7 @@
  * WebApiBridge should be left as a pure JS implementation. In order to
  * support typescript these declarations are supported in a separate .flow file.
  */
+
 /**
  * `Message` objects are exchanged between the react native app and a
  * webview. They can be monitored by attaching a `Listener` to the `WebApiBridge`
@@ -14,6 +15,7 @@ export type Message = {
   args: Array<any>,
   wantResult: boolean
 }
+
 /**
   * `Listener` functions can monitor all `Message` objects exchanged between `WebApiBridge`
   * objects. `Listener` functions are attached to WebApiBridge` objects by setting the
