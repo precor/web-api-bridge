@@ -30,10 +30,10 @@ yarn add @precor/web-api-bridge
 
 ## Type Checking
 
-Flow and Typescript definition files are included. The Proptype declaration for `Message` is included in `shapes.js`, i.e. to use it:
+Flow and Typescript definition files are included. The Proptype declaration for `Message` is included in `types/shapes.js`, i.e. to use it:
 
 ```javascript
-import { Message } from '@precor/web-api-bridge/shapes'
+import { Message } from '@precor/web-api-bridge/types/shapes'
 ```
 
 ## Documentation

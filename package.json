@@ -6,6 +6,10 @@
   "types": "lib/index.d.ts",
   "author": "Rob Seaman",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/precor/web-api-bridge.git"
+  },
   "scripts": {
     "build": "babel --presets es2015 --copy-files src --out-dir lib",
     "test": "jest src --watchAll",
