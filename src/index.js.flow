@@ -1,7 +1,6 @@
-// @flow
 /*
  * WebApiBridge should be left as a pure JS implementation. In order to
- * support flow these declarations are supported in a separate .flow file.
+ * support typescript these declarations are supported in a separate .flow file.
  */
 
 /**
@@ -13,9 +12,9 @@ export type Message = {
   type: "response" | "request",
   msgId: number,
   targetFunc: string,
-  args: Array<mixed>,
+  args: Array<any>,
   wantResult: boolean
-};
+}
 
 /**
   * `Listener` functions can monitor all `Message` objects exchanged between `WebApiBridge`
@@ -23,12 +22,12 @@ export type Message = {
   * `WebApiBridge listener` property. In a react application this would be done in the `WebViewApi`
   * that wants to listen to the bridge.
   */
-export type Listener = (message: Message) => void;
-export type Send = (apiCall: string, params: ?any[], wantResult?: boolean) => void;
-export type OnMessage = (event: string, data: {}) => void;
+export type Listener = (message: Message) => void
+export type Send = (apiCall: string, params: any[] | null, wantResult?: boolean) => void
+export type OnMessage = (event: string, data: {}) => void
 
-declare export default class WebApiBridge {
-  listener: ?Listener;
+export default class WebApiBridge {
+  listener: Listener | null;
   ipc: {};
   send: Send;
   apis: {}[];

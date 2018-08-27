@@ -7,7 +7,7 @@
   "author": "Rob Seaman",
   "license": "MIT",
   "scripts": {
-    "build": "babel --presets es2015 src --out-dir lib && ncp src/index.d.ts lib/index.d.ts && ncp src/index.js.flow lib/index.js.flow",
+    "build": "babel --presets es2015 --copy-files src --out-dir lib",
     "test": "jest src --watchAll",
     "test:build": "jest lib",
     "coverage": "jest --coverage",
@@ -28,7 +28,6 @@
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-react": "^7.11.1",
     "jest": "^23.5.0",
-    "ncp": "^2.0.0",
     "regenerator-runtime": "^0.12.1"
   },
   "dependencies": {}

@@ -28,6 +28,14 @@ or, if you're using `yarn`:
 yarn add @precor/web-api-bridge
 ```
 
+## Type Checking
+
+Flow and Typescript definition files are included. The Proptype declaration for `Message` is included in `shapes.js`, i.e. to use it:
+
+```javascript
+import { Message } from '@precor/web-api-bridge/shapes'
+```
+
 ## Documentation
 
 [WebViewBridge Class](https://github.com/precor/web-api-bridge/blob/master/docs/WEBVIEWBRIDGE.md)

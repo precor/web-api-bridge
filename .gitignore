@@ -9,7 +9,7 @@
 # website docs
 /docs/html
 
-# transpiled code
+# build outputs
 /lib
 
 # misc
