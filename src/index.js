@@ -114,7 +114,7 @@ class WebApiBridge {
      * in development mode, for example, `':3000'` will allow messages from any server using port
      * 3000. By default it's set to `''`, which will allow messages from any origin. This field
      * should be set as restrictrively as possible. e.g. `'https://www.mydomain.com:3000'`. Note
-     * that his property is irrelevant in React Native WebViews. Defaults to ''.
+     * that his property is irrelevant in React Native WebViews.
      */
     this.origin = '';
 
@@ -122,7 +122,7 @@ class WebApiBridge {
      * Property for specifying the origin of the target window in messages sent to browser windows.
      * By default it's set to `'*'`, which will allow messages to any document. This field
      * should be set as restrictrively as possible. e.g. `'https://www.mydomain.com:3000'`. Note
-     * that his property is irrelevant in React Native WebViews. Defaults to '*'.
+     * that his property is irrelevant in React Native WebViews.
      */
     this.targetOrigin = '*';
 
