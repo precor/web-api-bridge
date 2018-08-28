@@ -31,6 +31,7 @@ Example React Native API implementation using a `WebApiBridge`.
 ```javascript
 import React from 'react';
 import { WebView } from 'react-native';
+import WebApiBridge from '@precor/web-api-bridge';
 
 class WebViewApi extends React.Component {
   constructor(props) {
