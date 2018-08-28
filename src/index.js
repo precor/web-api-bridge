@@ -4,7 +4,7 @@
  * `WebApiBridge` is a JavaScript class that can be used in a React Native application
  * and in a web app running in a React Native [WebView](https://facebook.github.io/react-native/docs/webview.html)
  * to support a function call interface between the two. It can also be used as an IPC mechanism
- * between a web site and the code running in an iframe.
+ * between a web site and content running in an iframe.
  *
  * WebApiBridge works by passing `Message` objects between Javascript processes.
  *
@@ -58,12 +58,11 @@
  * @example <caption>Example `window` API implementation using a `WebApiBridge`.</caption>
  * import WebApiBridge from '@precor/web-api-bridge';
  *
- * // instantiated as `myApi`
  * class MyApi
  *   constructor() {
  *      webApiBridge = new WebApiBridge();
  *      webApiBridge.apis = [this];
- *      // webApiBridge.origin = 'https://www.mydom.com'; // if in iframe instead webview
+ *      // webApiBridge.origin = 'https://www.mydom.com'; // would enable if in iframe
  *      // and following would add to `window` if running in iframe instead of webview
  *      document.addEventListener('message', event => webApiBridge.onMessage(event, event.data));
  *      webApiBridge.ipc = window; // window.parent if running in iframe
