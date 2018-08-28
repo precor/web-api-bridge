@@ -98,7 +98,7 @@ class MyApi
    }
 
    onPartnerNotify() {
-     console.log(`other side called onPartnerNotify`);
+     console.log('other side called onPartnerNotify');
    }
  }
 
