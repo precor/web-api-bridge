@@ -3,34 +3,108 @@
 ### Table of Contents
 
 -   [WebApiBridge][1]
-    -   [apis][2]
-    -   [ipc][3]
-    -   [listener][4]
-    -   [origin][5]
-    -   [targetOrigin][6]
-    -   [onMessage][7]
-        -   [Parameters][8]
-    -   [send][9]
-        -   [Parameters][10]
+    -   [Examples][2]
+    -   [apis][3]
+    -   [ipc][4]
+    -   [listener][5]
+    -   [origin][6]
+    -   [targetOrigin][7]
+    -   [onMessage][8]
+        -   [Parameters][9]
+    -   [send][10]
+        -   [Parameters][11]
 
 ## WebApiBridge
 
 `WebApiBridge` is a JavaScript class that can be used in a React Native application
-and in a web app running in a React Native [WebView][11]
+and in a web app running in a React Native [WebView][12]
 to support a function call interface between the two. It can also be used as an IPC mechanism
 between a web site and the code running in an iframe.
 
 WebApiBridge works by passing `Message` objects between Javascript processes.
-A `prop-types` declaration of a Message object would look like this:
+
+### Examples
+
+Example React Native API implementation using a `WebApiBridge`.
+
 
 ```javascript
-  export const Message = PropTypes.shape({
-    type: PropTypes.oneOf(['response', 'request']),
-    msgId: PropTypes.number,
-    targetFunc: PropTypes.string,
-    args: PropTypes.arrayOf(PropTypes.any),
-    wantResult: PropTypes.bool,
-  });
+import React from 'react';
+import { WebView } from 'react-native';
+
+class WebViewApi extends React.Component {
+  constructor(props) {
+    super(props);
+    this.webApiBridge = new WebApiBridge();
+    this.onMessage = this.webApiBridge.onMessage.bind(this.webApiBridge);
+    this.webApiBridge.apis = [this]; // could be an array of apis passed as a prop instead
+    props.send(this.webApiBridge.send.bind(this.webApiBridge));
+  }
+
+  set webview(webview) {
+    const { onWebViewRef } = this.props;
+    this.webApiBridge.ipc = webview;
+    if (onWebViewRef) onWebViewRef(webview);
+  }
+
+  // incoming call
+  myApiCall = (param1, param2) => {
+    return new Promise((resolve) => {
+      resolve('myApiCall Result');
+     });
+  }
+
+  // outgoing call
+  onPartnerNotify = () => {
+    this.send('onPartnerNotify', null, false);
+  }
+
+  render() {
+    return (
+      <WebView
+        javaScriptEnabled
+        ref={(webview) => { this.webview = webview; }}
+        onMessage={this.onMessage}
+        scrollEnabled={false}
+        automaticallyAdjustContentInsets={false}
+      />
+    );
+  }
+}
+
+export default WebViewApi;
+```
+
+Example `window` API implementation using a `WebApiBridge`.
+
+
+```javascript
+import WebApiBridge from '@precor/web-api-bridge';
+
+// instantiated as `myApi`
+class MyApi
+  constructor() {
+     webApiBridge = new WebApiBridge();
+     webApiBridge.apis = [this];
+     // webApiBridge.origin = 'https://www.mydom.com'; // if in iframe instead webview
+     // and following would add to `window` if running in iframe instead of webview
+     document.addEventListener('message', event => webApiBridge.onMessage(event, event.data));
+     webApiBridge.ipc = window; // window.parent if running in iframe
+  }
+
+   // call with myApi.myApiCall(thing1, thing2).then(result => console.log(result));
+   myApiCall(param1, param2) {
+     webApiBridge.send('myApiCall', [param1, param2], true);
+   }
+
+   onPartnerNotify() {
+     console.log(`other side called onPartnerNotify`);
+   }
+ }
+
+const myApi = new MyApi();
+
+export default myApi;
 ```
 
 ### apis
@@ -75,8 +149,8 @@ from the other side.
 
 #### Parameters
 
--   `event` **[object][12]** Incomming event.
--   `data` **[string][13]** The incoming data received, which is a stingified JSON
+-   `event` **[object][13]** Incomming event.
+-   `data` **[string][14]** The incoming data received, which is a stingified JSON
     message. Defaults to `event.nativeEvent.data`, which is correct for React Native
     but needs to be overridden for the web app with `event.data`. (optional, default `event.nativeEvent.data`)
 
@@ -87,42 +161,44 @@ Returns a `Promise` object.
 
 #### Parameters
 
--   `targetFunc` **[string][13]** A string of the name of the api function to execute.
--   `args` **[Array][14]** An array of parameters to be passsed to the `targetFun`.
--   `wantResult` **[boolean][15]** Boolean to indicate if a `Promise` should be `fullfilled`
+-   `targetFunc` **[string][14]** A string of the name of the api function to execute.
+-   `args` **[Array][15]** An array of parameters to be passsed to the `targetFun`.
+-   `wantResult` **[boolean][16]** Boolean to indicate if a `Promise` should be `fullfilled`
        or `rejected` after the remote api completes the call. If `false` then no `Promise`
        will be `fullfilled`. (optional, default `false`)
 
-Returns **[Promise][16]** Promise object if `wantResult` is `true`, `null` if not.
+Returns **[Promise][17]** Promise object if `wantResult` is `true`, `null` if not.
 
 [1]: #webapibridge
 
-[2]: #apis
+[2]: #examples
 
-[3]: #ipc
+[3]: #apis
 
-[4]: #listener
+[4]: #ipc
 
-[5]: #origin
+[5]: #listener
 
-[6]: #targetorigin
+[6]: #origin
 
-[7]: #onmessage
+[7]: #targetorigin
 
-[8]: #parameters
+[8]: #onmessage
 
-[9]: #send
+[9]: #parameters
 
-[10]: #parameters-1
+[10]: #send
 
-[11]: https://facebook.github.io/react-native/docs/webview.html
+[11]: #parameters-1
 
-[12]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+[12]: https://facebook.github.io/react-native/docs/webview.html
 
-[13]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+[13]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
 
-[14]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+[14]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
 
-[15]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+[15]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
 
-[16]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
+[16]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+
+[17]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise

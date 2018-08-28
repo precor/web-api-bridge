@@ -7,17 +7,80 @@
  * between a web site and the code running in an iframe.
  *
  * WebApiBridge works by passing `Message` objects between Javascript processes.
- * A `prop-types` declaration of a Message object would look like this:
  *
- * ```javascript
- *   export const Message = PropTypes.shape({
- *     type: PropTypes.oneOf(['response', 'request']),
- *     msgId: PropTypes.number,
- *     targetFunc: PropTypes.string,
- *     args: PropTypes.arrayOf(PropTypes.any),
- *     wantResult: PropTypes.bool,
- *   });
- * ```
+ * @example <caption>Example React Native API implementation using a `WebApiBridge`.</caption>
+ * import React from 'react';
+ * import { WebView } from 'react-native';
+ *
+ * class WebViewApi extends React.Component {
+ *   constructor(props) {
+ *     super(props);
+ *     this.webApiBridge = new WebApiBridge();
+ *     this.onMessage = this.webApiBridge.onMessage.bind(this.webApiBridge);
+ *     this.webApiBridge.apis = [this]; // could be an array of apis passed as a prop instead
+ *     props.send(this.webApiBridge.send.bind(this.webApiBridge));
+ *   }
+ *
+ *   set webview(webview) {
+ *     const { onWebViewRef } = this.props;
+ *     this.webApiBridge.ipc = webview;
+ *     if (onWebViewRef) onWebViewRef(webview);
+ *   }
+ *
+ *   // incoming call
+ *   myApiCall = (param1, param2) => {
+ *     return new Promise((resolve) => {
+ *       resolve('myApiCall Result');
+ *      });
+ *   }
+ *
+ *   // outgoing call
+ *   onPartnerNotify = () => {
+ *     this.send('onPartnerNotify', null, false);
+ *   }
+ *
+ *   render() {
+ *     return (
+ *       <WebView
+ *         javaScriptEnabled
+ *         ref={(webview) => { this.webview = webview; }}
+ *         onMessage={this.onMessage}
+ *         scrollEnabled={false}
+ *         automaticallyAdjustContentInsets={false}
+ *       />
+ *     );
+ *   }
+ * }
+ *
+ * export default WebViewApi;
+ *
+ * @example <caption>Example `window` API implementation using a `WebApiBridge`.</caption>
+ * import WebApiBridge from '@precor/web-api-bridge';
+ *
+ * // instantiated as `myApi`
+ * class MyApi
+ *   constructor() {
+ *      webApiBridge = new WebApiBridge();
+ *      webApiBridge.apis = [this];
+ *      // webApiBridge.origin = 'https://www.mydom.com'; // if in iframe instead webview
+ *      // and following would add to `window` if running in iframe instead of webview
+ *      document.addEventListener('message', event => webApiBridge.onMessage(event, event.data));
+ *      webApiBridge.ipc = window; // window.parent if running in iframe
+ *   }
+ *
+ *    // call with myApi.myApiCall(thing1, thing2).then(result => console.log(result));
+ *    myApiCall(param1, param2) {
+ *      webApiBridge.send('myApiCall', [param1, param2], true);
+ *    }
+ *
+ *    onPartnerNotify() {
+ *      console.log(`other side called onPartnerNotify`);
+ *    }
+ *  }
+ *
+ * const myApi = new MyApi();
+ *
+ * export default myApi;
  */
 
 class WebApiBridge {

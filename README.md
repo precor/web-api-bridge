@@ -40,10 +40,6 @@ import { Message } from '@precor/web-api-bridge/types/shapes'
 
 [WebViewBridge Class](https://github.com/precor/web-api-bridge/blob/master/docs/WEBVIEWBRIDGE.md)
 
-## Examples
-
-Coming ...
-
 ## Gotchas
 
 * Beware that messages passed before `onLoad` is called will probably not get through.
