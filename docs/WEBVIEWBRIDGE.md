@@ -19,7 +19,7 @@
 `WebApiBridge` is a JavaScript class that can be used in a React Native application
 and in a web app running in a React Native [WebView][12]
 to support a function call interface between the two. It can also be used as an IPC mechanism
-between a web site and the code running in an iframe.
+between a web site and content running in an iframe.
 
 WebApiBridge works by passing `Message` objects between Javascript processes.
 
@@ -82,12 +82,12 @@ Example `window` API implementation using a `WebApiBridge`.
 ```javascript
 import WebApiBridge from '@precor/web-api-bridge';
 
-// instantiated as `myApi`
 class MyApi
   constructor() {
      webApiBridge = new WebApiBridge();
      webApiBridge.apis = [this];
-     // webApiBridge.origin = 'https://www.mydom.com'; // if in iframe instead webview
+     // webApiBridge.origin = 'https://www.mydom.com'; // should enable if in iframe
+     // webApiBridge.targetOrigin = 'https://www.mydom.com'; // should enable if in iframe
      // and following would add to `window` if running in iframe instead of webview
      document.addEventListener('message', event => webApiBridge.onMessage(event, event.data));
      webApiBridge.ipc = window; // window.parent if running in iframe
@@ -134,14 +134,14 @@ of the origin to be matched in browser windows. This makes it easy to provide so
 in development mode, for example, `':3000'` will allow messages from any server using port
 3000\. By default it's set to `''`, which will allow messages from any origin. This field
 should be set as restrictrively as possible. e.g. `'https://www.mydomain.com:3000'`. Note
-that his property is irrelevant in React Native WebViews.
+that his property is irrelevant in React Native WebViews. Defaults to ''.
 
 ### targetOrigin
 
 Property for specifying the origin of the target window in messages sent to browser windows.
 By default it's set to `'*'`, which will allow messages to any document. This field
 should be set as restrictrively as possible. e.g. `'https://www.mydomain.com:3000'`. Note
-that his property is irrelevant in React Native WebViews.
+that his property is irrelevant in React Native WebViews. Defaults to '\*'.
 
 ### onMessage
 
