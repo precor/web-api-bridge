@@ -1,12 +1,12 @@
 # WebApiBridge
 
-`WebApiBridge` is a plain JavaScript class that can be used in a React Native application and in a web app running in a React Native [WebView](https://facebook.github.io/react-native/docs/webview.html) to support a function call API between the two. It can also be used as an IPC mechanism between a web page and an iframe. The intention is for this code to be used in a web app that is using either a framework or pure JavaScript so framework code was kept out of this class.
+`WebApiBridge` is a plain JavaScript class that can be used in a React Native application and in a web app using [react-native-community/react-native-webview](https://github.com/react-native-community/react-native-webview) to support a function call API between the two. The original [React Native WebView](https://facebook.github.io/react-native/docs/webview.html) has been deprecated but will still work. The api can also be used as an IPC mechanism between other windows, for example, a web page and an iframe. The intention is for this code to be used in a web app that is using either a framework or pure JavaScript so framework code was kept out of this class.
 
 ## Features
 
 * Provides support for API calls between JavaScript processes. Each process can support API calls in an array of JavaScript objects (inluding React components)
 * Marshalls plain JavaScript parameters and return values via `JSON.stringify()`
-* Works for React Native webviews
+* Works with [react-native-community/react-native-webview](https://github.com/react-native-community/react-native-webview), including support of [ReactNativeWebView.postMessage](https://github.com/react-native-community/react-native-webview/blob/cdbfc19cd20a0d96c9cbd13fcb8a32fcde77943b/docs/Guide.md#the-windowreactnativewebviewpostmessage-method-and-onmessage-prop)
 * Works for communication between a web page and iframe based window
 * Provides promise support for asynchronous API calls that need to return results
 * Marshalls exceptions thown in API calls to the caller
@@ -42,7 +42,7 @@ import { Message } from '@precor/web-api-bridge/types/shapes'
 
 ## Gotchas
 
-* Beware that messages passed before `onLoad` is called will probably not get through.
+* Beware that messages passed before `onLoad` is called may not get through.
 * Type files for Flow and TypeScript are included but not used by our projects so they may have issues. Please submit an issue or better yet a pull request with corrections.
 
 ## History

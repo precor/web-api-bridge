@@ -26,6 +26,9 @@ class TestAPI {
 class TestIPC {
   constructor() {
     this.postMessage = jest.fn();
+    this.ReactNativeWebView = {
+      postMessage: jest.fn(),
+    };
   }
 }
 
@@ -88,6 +91,18 @@ describe('WebApiBridge', () => {
     wab.onMessage('message', JSON.stringify(wantResultMsg));
     expect(testAPI.testFunc).toHaveBeenCalled();
     expect(testIPC.postMessage).toHaveBeenCalledWith(JSON.stringify(expectedResultMsg), '*');
+  });
+
+  it('sends a result using ReactNativeWebView, given a response coming from a ReactNativeWebView', () => {
+    const wantResultMsg = { ...testFuncMsg, wantResult: true };
+    const expectedResultMsg = {
+      ...wantResultMsg, type: 'response', args: [], error: 'Cannot read property \'then\' of undefined',
+    };
+    wab.useReactNativeWebView = true;
+    wab.onMessage('message', JSON.stringify(wantResultMsg));
+    expect(testAPI.testFunc).toHaveBeenCalled();
+    expect(testIPC.ReactNativeWebView.postMessage)
+      .toHaveBeenCalledWith(JSON.stringify(expectedResultMsg));
   });
 
   it('calls an api function with params, given an incoming request has params', () => {
@@ -273,6 +288,13 @@ describe('WebApiBridge', () => {
   it('sends an api request without requesting a result, given the send says not to', () => {
     expect(wab.send('testFunc', [], false)).toBeNull();
     expect(JSON.parse(testIPC.postMessage.mock.calls[0][0])).toEqual(testFuncMsg);
+  });
+
+  it('sends an api request using using ReactNativeWebView, given request from a ReactNativeWebView', () => {
+    wab.useReactNativeWebView = true;
+    expect(wab.send('testFunc', [], false)).toBeNull();
+    expect(JSON.parse(testIPC.ReactNativeWebView.postMessage.mock.calls[0][0]))
+      .toEqual(testFuncMsg);
   });
 
   it('sends an api request without requesting a result by default', () => {

@@ -1,3 +1,5 @@
+import { PostMessage } from "../lib";
+
 /*
  * WebApiBridge should be left as a pure JS implementation. In order to
  * support typescript these declarations are supported in a separate .flow file.
@@ -29,6 +31,7 @@ export type OnMessage = (event: string, data: {}) => void
 export default class WebApiBridge {
   listener: Listener | null;
   ipc: {};
+  useReactNativeWebView: boolean;
   send: Send;
   apis: {}[];
   onMessage: OnMessage;
