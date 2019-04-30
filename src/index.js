@@ -182,6 +182,7 @@ class WebApiBridge {
 
   handleRequest(request) {
     const response = request;
+    response.sourceHref = (window.location) ? window.location.href : undefined;
     try {
       // validate whether or not we expected this request
       // no modulo is required 9007199254740991 between restarts, so keeping it simple:
@@ -235,7 +236,9 @@ class WebApiBridge {
     }
     let message;
     try {
-      message = JSON.parse(data); // event.nativeEvent.data);
+      // note: doing a regex as a sanity check vs a parse would be good
+      //       if there were a lot of exceptions:
+      message = JSON.parse(data);
     } catch (err) {
       console.warn(err);
       return;
@@ -271,8 +274,9 @@ class WebApiBridge {
    */
   send(targetFunc, args, wantResult = false) {
     const msgId = this.newMsgId();
+    const sourceHref = (window.location) ? window.location.href : undefined;
     const message = {
-      type: 'request', wantResult, targetFunc, args, msgId, error: null,
+      type: 'request', wantResult, targetFunc, args, msgId, error: null, sourceHref,
     };
     if (wantResult) {
       return new Promise((resolve, reject) => {

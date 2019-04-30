@@ -34,5 +34,11 @@
     "jest": "^23.5.0",
     "regenerator-runtime": "^0.12.1"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/examples/"
+    ]
+  }
 }

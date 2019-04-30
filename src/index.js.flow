@@ -13,7 +13,8 @@ export type Message = {
   msgId: number,
   targetFunc: string,
   args: Array<any>,
-  wantResult: boolean
+  wantResult: boolean,
+  sourceHref: ?string
 }
 
 /**

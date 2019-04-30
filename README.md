@@ -12,6 +12,7 @@
 * Marshalls exceptions thown in API calls to the caller
 * Validates the existance of API call and message delivery so reliability errors are reported
 * Allows setting of origin and targetOrigin restrictions
+* Received messages have a sourceHref property that contains the window.location.href of the posting window. This can be used by a window event listener for routing messages from different sources, even if the source is in a different origin
 * A `listener()` function hook that will be passed all messages sent/received
 
 ## Installation

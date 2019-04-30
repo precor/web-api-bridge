@@ -52,6 +52,7 @@ describe('WebApiBridge', () => {
     args: [],
     wantResult: false,
     error: null,
+    sourceHref: 'http://localhost/',
   };
 
   // validate an origin failure
