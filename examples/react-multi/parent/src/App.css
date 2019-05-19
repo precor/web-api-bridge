@@ -1,0 +1,33 @@
+.container {
+  position: relative;
+  width: 100%;
+  text-align: center;
+}
+
+.row {
+  width: 100%;
+  height: 100%;
+  margin: none;
+}
+
+.fullscreen-iframe {
+  position: absolute;
+  border: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.image-select {
+  width: 25%;
+  border: 0;
+}
+
+.overlay-text {
+  color: white;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%);
+  position: absolute;
+  bottom: 0.2em;
+  width: 100%;
+}
