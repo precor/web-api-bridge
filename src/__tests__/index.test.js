@@ -65,9 +65,21 @@ describe('WebApiBridge', () => {
 
   // validate receiving data from the other side
 
-  it('displays a console.warn(), given an incomming message is not JSON', () => {
+  it('returns right away if an incomming message is not a string', () => {
     console.warn = jest.fn();
-    wab.onMessage('message', 'Can you be fooled?');
+    wab.onMessage('message', { A: 1, B: 2 });
+    expect(testIPC.postMessage).not.toHaveBeenCalled();
+  });
+
+  it('returns right away if an incomming message does not have a targetFunc property', () => {
+    console.warn = jest.fn();
+    wab.onMessage('message', JSON.stringify({ A: 1, B: 2 }));
+    expect(testIPC.postMessage).not.toHaveBeenCalled();
+  });
+
+  it('displays a console.warn(), given an incomming message is not valid JSON', () => {
+    console.warn = jest.fn();
+    wab.onMessage('message', '"targetFunc": { fred }');
     expect(console.warn).toHaveBeenCalled();
   });
 
@@ -174,72 +186,6 @@ describe('WebApiBridge', () => {
       expect(targetOrigin).toBe('*');
       done();
     };
-  });
-
-  it('calls api but displays a console.warn(), given the msgId of the request doesn\'t increment', () => {
-    // make an initial good call with message #1
-    console.warn = jest.fn();
-    wab.onMessage('message', JSON.stringify(testFuncMsg));
-    expect(console.warn).not.toHaveBeenCalled();
-
-    // make sure warning isn't called again if the number is correctly imcremented to 2
-    const msg2 = { ...testFuncMsg, msgId: 2 };
-    const msg2String = JSON.stringify(msg2);
-    wab.onMessage('message', msg2String);
-    expect(console.warn).not.toHaveBeenCalled();
-    expect(testAPI.testFunc).toHaveBeenCalledTimes(2);
-
-    // keep id at 1 instead of incrementing it
-    wab.onMessage('message', msg2String);
-    expect(console.warn).toHaveBeenCalledWith(`expected request with { msgID: 3 } got: ${msg2String}`);
-    expect(console.warn).toHaveBeenCalledTimes(1);
-    expect(testAPI.testFunc).toHaveBeenCalledTimes(3);
-
-    // make sure warning isn't called again if the number is correct
-    const msg3 = { ...msg2, msgId: 3 };
-    wab.onMessage('message', JSON.stringify(msg3));
-    expect(console.warn).toHaveBeenCalledTimes(1);
-    expect(testAPI.testFunc).toHaveBeenCalledTimes(4);
-
-    // now go backwards with the count to generate another warning
-    wab.onMessage('message', msg2String);
-    expect(console.warn).toHaveBeenCalledWith(`expected request with { msgID: 4 } got: ${msg2String}`);
-    expect(testAPI.testFunc).toHaveBeenCalledTimes(5);
-  });
-
-  it('ignores msgId for first messages on either side so restarting doesn\'t cause warnings', () => {
-    // simulate that we've restarted (expect a message id of 1)
-    console.warn = jest.fn();
-    const msg4 = { ...testFuncMsg, msgId: 4 };
-    const msg4String = JSON.stringify(msg4);
-    wab.onMessage('message', msg4String);
-    expect(console.warn).not.toHaveBeenCalled();
-    expect(testAPI.testFunc).toHaveBeenCalledTimes(1);
-
-    // other side should now send 5, no warning if it does
-    const msg5 = { ...testFuncMsg, msgId: 5 };
-    const msg5String = JSON.stringify(msg5);
-    wab.onMessage('message', msg5String);
-    expect(console.warn).not.toHaveBeenCalled();
-    expect(testAPI.testFunc).toHaveBeenCalledTimes(2);
-
-    // make it some incorrect value instead of incrementing it
-    const msg2 = { ...testFuncMsg, msgId: 2 };
-    const msg2String = JSON.stringify(msg2);
-    wab.onMessage('message', msg2String);
-    expect(console.warn).toHaveBeenCalledWith(`expected request with { msgID: 6 } got: ${msg2String}`);
-    expect(console.warn).toHaveBeenCalledTimes(1);
-    expect(testAPI.testFunc).toHaveBeenCalledTimes(3);
-
-    // simulate the other side resetting by having it send 1
-    wab.onMessage('message', JSON.stringify(testFuncMsg));
-    expect(console.warn).toHaveBeenCalledTimes(1); // no increment
-    expect(testAPI.testFunc).toHaveBeenCalledTimes(4);
-
-    // now we expect 2 and should not get a warning if that's what we get
-    wab.onMessage('message', msg2String);
-    expect(console.warn).toHaveBeenCalledTimes(1); // no increment
-    expect(testAPI.testFunc).toHaveBeenCalledTimes(5);
   });
 
   it('passes all request and response messages to a listener', (done) => {

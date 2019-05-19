@@ -146,7 +146,6 @@ class WebApiBridge {
 
     this.sendCompletions = {};
     this.currentId = 0; // id for sent messages
-    this.idLastRxRequest = 0; // msdId of last request received
   }
 
   newMsgId() {
@@ -184,16 +183,6 @@ class WebApiBridge {
     const response = request;
     response.sourceHref = (window.location) ? window.location.href : undefined;
     try {
-      // validate whether or not we expected this request
-      // no modulo is required 9007199254740991 between restarts, so keeping it simple:
-      if (request.msgId !== this.idLastRxRequest + 1
-        && request.msgId !== 1 && this.idLastRxRequest) {
-        // could ignore an invalid ID but that could result in dead interface so
-        // we'll just generate a warning
-        console.warn(`expected request with { msgID: ${this.idLastRxRequest + 1} } got: ${JSON.stringify(request)}`);
-      }
-      this.idLastRxRequest = request.msgId;
-
       // process the request
       const api = this.apis.filter(elem => elem[request.targetFunc] !== undefined).pop();
       if (!api) {
@@ -228,16 +217,13 @@ class WebApiBridge {
    * @param {object} event - Incomming event.
    * @param {string} data - The incoming data received, which is a stingified JSON
    * message. Defaults to `event.nativeEvent.data`, which is correct for React Native
-   * but needs to be overridden for the web app with `event.data`.
+   * but needs to be overridden for web apps with `event.data`.
    */
   onMessage(event, data = event.nativeEvent.data) {
-    if (event.origin && event.origin.search(this.origin) === -1) {
-      return;
-    }
+    if (event.origin && event.origin.search(this.origin) === -1) return;
+    if (typeof data !== 'string' || data.indexOf('"targetFunc":') === -1) return;
     let message;
     try {
-      // note: doing a regex as a sanity check vs a parse would be good
-      //       if there were a lot of exceptions:
       message = JSON.parse(data);
     } catch (err) {
       console.warn(err);
