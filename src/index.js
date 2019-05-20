@@ -26,7 +26,7 @@
  *
  *   set webview(webview) {
  *     const { onWebViewRef } = this.props;
- *     this.webApiBridge.ipc = webview;
+ *     this.webApiBridge.target = webview;
  *     if (onWebViewRef) onWebViewRef(webview);
  *   }
  *
@@ -72,10 +72,10 @@
  *      const eventObj = (iOS) ? window : document; // window if not in a webview
  *      eventObj.addEventListener('message', event => webApiBridge.onMessage(event, event.data));
  *      // for webview:
- *      webApiBridge.ipc = window;
+ *      webApiBridge.target = window;
  *      webApiBridge.useReactNativeWebView = true; // webview side only
  *      // enable this for non-webview:
- *      // webApiBridge.ipc = window; // use window.parent for an iframe
+ *      // webApiBridge.target = window; // use window.parent for an iframe
  *   }
  *
  *    // call with myApi.myApiCall(thing1, thing2).then(result => console.log(result));
@@ -104,18 +104,18 @@ class WebApiBridge {
     this.apis = [];
 
     /**
-     * Property for ipc object to post messages to the other side. Typically the `window`,
+     * Property for target object to post messages to the other side. Typically the `window`,
      * or a `window.parent` for an iframe in a normal web page. For the `WebView`
      * component on the React Native side use the `ref`, and for the web side of
      * [react-native-webview](https://github.com/react-native-community/react-native-webview)
      * use `window.parent` for iOS and `window` for Android.
      */
-    this.ipc = {};
+    this.target = {};
 
     /**
      * Property that should be truthy for a webview using
      * [react-native-webview](https://github.com/react-native-community/react-native-webview). When set
-     * `ipc.ReactNativeWebView.postMessage` will be used instead of `ipc.postMessage`.
+     * `target.ReactNativeWebView.postMessage` will be used instead of `target.postMessage`.
      */
     this.useReactNativeWebView = undefined;
 
@@ -173,9 +173,9 @@ class WebApiBridge {
     response.type = 'response';
     if (this.listener) this.listener(response);
     if (this.useReactNativeWebView) {
-      this.ipc.ReactNativeWebView.postMessage(JSON.stringify(response));
+      this.target.ReactNativeWebView.postMessage(JSON.stringify(response));
     } else {
-      this.ipc.postMessage(JSON.stringify(response), this.targetOrigin);
+      this.target.postMessage(JSON.stringify(response), this.targetOrigin);
     }
   }
 
@@ -241,9 +241,9 @@ class WebApiBridge {
   doSend(message) {
     if (this.listener) this.listener(message);
     if (this.useReactNativeWebView) {
-      this.ipc.ReactNativeWebView.postMessage(JSON.stringify(message));
+      this.target.ReactNativeWebView.postMessage(JSON.stringify(message));
     } else {
-      this.ipc.postMessage(JSON.stringify(message), this.targetOrigin);
+      this.target.postMessage(JSON.stringify(message), this.targetOrigin);
     }
   }
 

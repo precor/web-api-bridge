@@ -28,7 +28,7 @@ export type OnMessage = (event: string, data: {}) => void
 
 export default class WebApiBridge {
   listener: Listener | null;
-  ipc: {};
+  target: {};
   useReactNativeWebView: boolean;
   send: Send;
   apis: {}[];
