@@ -56,21 +56,12 @@ class Api2 {
   };
 }
 
-// we need to route messages coming from 5 iframes to the correct bridge
-window.addEventListener('message', (event) => {
-  if (event && event.origin && event.data && typeof event.data === 'string') {
-    const targetIframe = bridgedIframes.find(bridgedIframe => (
-      event.source === bridgedIframe.webApiBridge.target
-    ));
-    if (targetIframe) {
-      targetIframe.webApiBridge.onMessage(event, event.data);
-    }
-  }
-});
-
 class BridgedIframe extends Component {
-  constructor(props) {
-    super(props);
+  setIframe = (iframe) => {
+    if (!iframe || this.iframe) {
+      return;
+    }
+    this.iframe = iframe;
     const { src, api } = this.props;
 
     const url = new URL(src);
@@ -80,18 +71,13 @@ class BridgedIframe extends Component {
     this.webApiBridge.apis = [api];
     api.setSend(this.webApiBridge.send.bind(this.webApiBridge));
     bridgedIframes.push(this);
-    this.state = { selectedPhoto: false };
-    // enable to log all webapp messsages:
-    // this.webApiBridge.listener = (message) => { console.log(message); };
-  }
-
-  setIframe = (iframe) => {
-    if (!iframe || this.iframe) {
-      return;
-    }
-    this.iframe = iframe;
     this.webApiBridge.target = iframe.contentWindow;
-    this.iframe.onload = () => {
+    window.addEventListener('message', event => {
+      if (event && event.source === this.webApiBridge.target) {
+        this.webApiBridge.onMessage(event, event.data);
+      }
+    });
+    iframe.onload = () => {
       console.log(`${iframe.src} loaded`);
     };
   }
