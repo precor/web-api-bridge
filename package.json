@@ -1,6 +1,6 @@
 {
   "name": "@precor/web-api-bridge",
-  "version": "0.0.4",
+  "version": "1.0.0",
   "description": "Provides api marshalling for React Native WebvViews and web page iframes.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
