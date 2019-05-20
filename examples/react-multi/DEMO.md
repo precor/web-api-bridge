@@ -1,6 +1,6 @@
 # examples/react-multi
 
-[source](https://github.com/robseaman/precor/web-api-bridge/tree/master/examples/react-multi/)
+[source](https://github.com/precor/web-api-bridge/tree/master/examples/react-multi/)
 
 <iframe src="https://precor.github.io/web-api-bridge/examples/react-multi/parent/build/" width="320" height="512" frameborder="0" style="float: left; margin-right: 10px" ></iframe>
 
