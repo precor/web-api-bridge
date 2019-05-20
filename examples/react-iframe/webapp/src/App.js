@@ -30,7 +30,7 @@ class App extends Component {
     this.webApiBridge.targetOrigin = origin;
     this.webApiBridge.apis = [this.myIframeApi];
     window.addEventListener('message', event => this.webApiBridge.onMessage(event, event.data));
-    this.webApiBridge.ipc = window.parent;
+    this.webApiBridge.target = window.parent;
     // enable to log all webapp messsages:
     // this.webApiBridge.listener = (message) => { console.log(message); };
     this.state = {};

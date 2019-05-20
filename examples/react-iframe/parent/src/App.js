@@ -42,7 +42,7 @@ class App extends Component {
       return;
     }
     this.iframe = iframe;
-    this.webApiBridge.ipc = iframe.contentWindow;
+    this.webApiBridge.target = iframe.contentWindow;
     this.iframe.onload = () => {
       console.log('iframeUrl loaded');
       this.myMainApi.welcome('hello iframe');

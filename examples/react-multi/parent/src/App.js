@@ -60,7 +60,7 @@ class Api2 {
 window.addEventListener('message', (event) => {
   if (event && event.origin && event.data && typeof event.data === 'string') {
     const targetIframe = bridgedIframes.find(bridgedIframe => (
-      event.source === bridgedIframe.webApiBridge.ipc
+      event.source === bridgedIframe.webApiBridge.target
     ));
     if (targetIframe) {
       targetIframe.webApiBridge.onMessage(event, event.data);
@@ -90,7 +90,7 @@ class BridgedIframe extends Component {
       return;
     }
     this.iframe = iframe;
-    this.webApiBridge.ipc = iframe.contentWindow;
+    this.webApiBridge.target = iframe.contentWindow;
     this.iframe.onload = () => {
       console.log(`${iframe.src} loaded`);
     };

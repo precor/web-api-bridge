@@ -84,7 +84,7 @@ class App extends Component {
     super(props);
 
     this.webApiBridge = new WebApiBridge();
-    this.webApiBridge.ipc = window.parent;
+    this.webApiBridge.target = window.parent;
     this.webApiBridge.origin = parentOrigin;
     this.webApiBridge.targetOrigin = parentOrigin;
     window.addEventListener('message', event => this.webApiBridge.onMessage(event, event.data));

@@ -19,7 +19,7 @@ class App extends Component {
     super(props);
 
     this.webApiBridge = new WebApiBridge();
-    this.webApiBridge.ipc = window.parent;
+    this.webApiBridge.target = window.parent;
     this.webApiBridge.origin = parentOrigin;
     this.webApiBridge.targetOrigin = parentOrigin;
     this.send = this.webApiBridge.send.bind(this.webApiBridge);
