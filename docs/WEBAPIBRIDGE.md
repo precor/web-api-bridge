@@ -171,7 +171,7 @@ from the other side.
 -   `event` **[object][15]** Incomming event.
 -   `data` **[string][16]** The incoming data received, which is a stingified JSON
     message. Defaults to `event.nativeEvent.data`, which is correct for React Native
-    but needs to be overridden for the web app with `event.data`. (optional, default `event.nativeEvent.data`)
+    but needs to be overridden for web apps with `event.data`. (optional, default `event.nativeEvent.data`)
 
 ### send
 

@@ -1,19 +1,17 @@
 # WebApiBridge
 
-`WebApiBridge` is a plain JavaScript class that can be used in a React Native application and in a web app using [react-native-community/react-native-webview](https://github.com/react-native-community/react-native-webview) to support a function call API between the two. The original [React Native WebView](https://facebook.github.io/react-native/docs/webview.html) has been deprecated but will still work. The api can also be used as an IPC mechanism between other windows, for example, a web page and an iframe. The intention is for this code to be used in a web app that is using either a framework or pure JavaScript so framework code was kept out of this class.
+`WebApiBridge` is a JavaScript class that can be used to make it easier for a React Native application and a web app using [react-native-community/react-native-webview](https://github.com/react-native-community/react-native-webview) to support a function call API. The original [React Native WebView](https://facebook.github.io/react-native/docs/webview.html) has been deprecated but should still work. The webview support is targeted at React Native but the class is implemented generically so communication for any window that support `postMessage` and can provide incoming message events also works. For example, a parent web page and an iframe or a service worker with multiple tabs can use the class for API support. This type of support has no dependancy on the JavaScript framework.
 
 ## Features
 
 * Provides support for API calls between JavaScript processes. Each process can support API calls in an array of JavaScript objects (inluding React components)
-* Marshalls plain JavaScript parameters and return values via `JSON.stringify()`
-* Works with [react-native-community/react-native-webview](https://github.com/react-native-community/react-native-webview), including support of [ReactNativeWebView.postMessage](https://github.com/react-native-community/react-native-webview/blob/cdbfc19cd20a0d96c9cbd13fcb8a32fcde77943b/docs/Guide.md#the-windowreactnativewebviewpostmessage-method-and-onmessage-prop)
-* Works for communication between a web page and iframe based window
+* Marshalls plain JavaScript parameters and return values via `JSON.stringify()` to work with [react-native-community/react-native-webview](https://github.com/react-native-community/react-native-webview), including support of [ReactNativeWebView.postMessage](https://github.com/react-native-community/react-native-webview/blob/cdbfc19cd20a0d96c9cbd13fcb8a32fcde77943b/docs/Guide.md#the-windowreactnativewebviewpostmessage-method-and-onmessage-prop)
+* Works for communication between a web page and iframe child window
 * Provides promise support for asynchronous API calls that need to return results
 * Marshalls exceptions thown in API calls to the caller
 * Validates the existance of API call and message delivery so reliability errors are reported
-* Allows setting of origin and targetOrigin restrictions
-* Received messages have a sourceHref property that contains the window.location.href of the posting window. This can be used by a window event listener for routing messages from different sources, even if the source is in a different origin
-* A `listener()` function hook that will be passed all messages sent/received
+* Supports origin and targetOrigin settings
+* A `listener()` function hook is provided for debugging that will be passed all messages sent/received
 
 ## Installation
 
@@ -39,11 +37,17 @@ import { Message } from '@precor/web-api-bridge/types/shapes'
 
 ## Documentation
 
-[WebViewBridge Class](https://github.com/precor/web-api-bridge/blob/master/docs/WEBVIEWBRIDGE.md)
+[WebApiBridge Class](./docs/WEBAPIBRIDGE.md)
+
+## Examples
+
+[react-iframe](https://precor.github.io/web-api-bridge/examples/react-iframe/DEMO.html) is a simple react implementation of an API between a parent and an iframe.
+
+[react-multi](https://precor.github.io/web-api-bridge/examples/react-multi/DEMO.html) is a react implementation of an API between a parent and multiple iframes.
 
 ## Gotchas
 
-* Beware that messages passed before `onLoad` is called may not get through.
+* In early versions of React Native webviews messages passed before `onLoad` was called did not get reliably get passed. If you experience a problem with this, you can tie an initial api call, e.g. `ready()` or `version()`, to onLoad completion and make sure the webview doesn't send anything until that call is recieved.
 * Type files for Flow and TypeScript are included but not used by our projects so they may have issues. Please submit an issue or better yet a pull request with corrections.
 
 ## History
