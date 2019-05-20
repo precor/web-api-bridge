@@ -6,6 +6,5 @@ export const Message = PropTypes.shape({
   msgId: PropTypes.number,
   targetFunc: PropTypes.string,
   args: PropTypes.arrayOf(PropTypes.any),
-  wantResult: PropTypes.bool,
-  sourceHref: PropTypes.string,
+  wantyaResult: PropTypes.bool,
 });

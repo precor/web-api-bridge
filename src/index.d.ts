@@ -16,7 +16,6 @@ export type Message = {
   targetFunc: string,
   args: Array<any>,
   wantResult: boolean,
-  sourceHref: string | undefined
 }
 
 /**

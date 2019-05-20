@@ -181,7 +181,6 @@ class WebApiBridge {
 
   handleRequest(request) {
     const response = request;
-    response.sourceHref = (window.location) ? window.location.href : undefined;
     try {
       // process the request
       const api = this.apis.filter(elem => elem[request.targetFunc] !== undefined).pop();
@@ -260,9 +259,8 @@ class WebApiBridge {
    */
   send(targetFunc, args, wantResult = false) {
     const msgId = this.newMsgId();
-    const sourceHref = (window.location) ? window.location.href : undefined;
     const message = {
-      type: 'request', wantResult, targetFunc, args, msgId, error: null, sourceHref,
+      type: 'request', wantResult, targetFunc, args, msgId, error: null,
     };
     if (wantResult) {
       return new Promise((resolve, reject) => {
