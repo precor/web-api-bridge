@@ -5,7 +5,7 @@
 -   [WebApiBridge][1]
     -   [Examples][2]
     -   [apis][3]
-    -   [ipc][4]
+    -   [target][4]
     -   [useReactNativeWebView][5]
     -   [listener][6]
     -   [origin][7]
@@ -47,7 +47,7 @@ class WebViewApi extends React.Component {
 
   set webview(webview) {
     const { onWebViewRef } = this.props;
-    this.webApiBridge.ipc = webview;
+    this.webApiBridge.target = webview;
     if (onWebViewRef) onWebViewRef(webview);
   }
 
@@ -97,10 +97,10 @@ class MyApi
      const eventObj = (iOS) ? window : document; // window if not in a webview
      eventObj.addEventListener('message', event => webApiBridge.onMessage(event, event.data));
      // for webview:
-     webApiBridge.ipc = window;
+     webApiBridge.target = window;
      webApiBridge.useReactNativeWebView = true; // webview side only
      // enable this for non-webview:
-     // webApiBridge.ipc = window; // use window.parent for an iframe
+     // webApiBridge.target = window; // use window.parent for an iframe
   }
 
    // call with myApi.myApiCall(thing1, thing2).then(result => console.log(result));
@@ -125,9 +125,9 @@ calls. This is an array of objects so that a single `WebViewApi` can have
 multiple APIs. The last API with a function is used if the function exists
 in more than one API.
 
-### ipc
+### target
 
-Property for ipc object to post messages to the other side. Typically the `window`,
+Property for target object to post messages to the other side. Typically the `window`,
 or a `window.parent` for an iframe in a normal web page. For the `WebView`
 component on the React Native side use the `ref`, and for the web side of
 [react-native-webview][13]
@@ -137,7 +137,7 @@ use `window.parent` for iOS and `window` for Android.
 
 Property that should be truthy for a webview using
 [react-native-webview][13]. When set
-`ipc.ReactNativeWebView.postMessage` will be used instead of `ipc.postMessage`.
+`target.ReactNativeWebView.postMessage` will be used instead of `target.postMessage`.
 
 ### listener
 
@@ -194,7 +194,7 @@ Returns **[Promise][19]** Promise object if `wantResult` is `true`, `null` if no
 
 [3]: #apis
 
-[4]: #ipc
+[4]: #target
 
 [5]: #usereactnativewebview
 
