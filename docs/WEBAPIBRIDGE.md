@@ -122,7 +122,7 @@ export default myApi;
 
 Property of the api objects that contain methods for incoming api function
 calls. This is an array of objects so that a single `WebViewApi` can have
-multiple APIs. The last API with a function is used if the function exists
+multiple APIs. The first API with a function is used if the function exists
 in more than one API.
 
 ### target

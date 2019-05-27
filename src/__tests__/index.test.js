@@ -215,14 +215,14 @@ describe('WebApiBridge', () => {
     expect(secondAPI.secondAPIFunc).toHaveBeenCalled();
   });
 
-  it('calls into the last api object, given more than one supporting a function exists', () => {
+  it('calls into the first api object, given more than one supporting a function exists', () => {
     const secondAPI = {
       testFunc: jest.fn(),
     };
     wab.apis = [testAPI, secondAPI];
     wab.onMessage('message', JSON.stringify(testFuncMsg));
-    expect(secondAPI.testFunc).toHaveBeenCalled();
-    expect(testAPI.testFunc).not.toHaveBeenCalled();
+    expect(testAPI.testFunc).toHaveBeenCalled();
+    expect(secondAPI.testFunc).not.toHaveBeenCalled();
   });
 
   // validate sending api calls to the other side

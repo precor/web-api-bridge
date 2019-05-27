@@ -98,7 +98,7 @@ class WebApiBridge {
     /**
      * Property of the api objects that contain methods for incoming api function
      * calls. This is an array of objects so that a single `WebViewApi` can have
-     * multiple APIs. The last API with a function is used if the function exists
+     * multiple APIs. The first API with a function is used if the function exists
      * in more than one API.
      */
     this.apis = [];
@@ -183,7 +183,7 @@ class WebApiBridge {
     const response = request;
     try {
       // process the request
-      const api = this.apis.filter(elem => elem[request.targetFunc] !== undefined).pop();
+      const api = this.apis.find(elem => elem[request.targetFunc]);
       if (!api) {
         console.warn(`${request.targetFunc} function does not exist`);
         throw new Error('function does not exist');
