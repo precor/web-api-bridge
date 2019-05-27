@@ -47,7 +47,7 @@ import { Message } from '@precor/web-api-bridge/types/shapes'
 
 ## Gotchas
 
-* In early versions of React Native webviews messages passed before `onLoad` was called did not get reliably get passed. If you experience a problem with this, you can tie an initial api call, e.g. `ready()` or `version()`, to onLoad completion and make sure the webview doesn't send anything until that call is recieved.
+* If you need to send a message from an app that loads a webview or an iframe, e.g. from a React Native app or a window parent, before receiving from that app then wait for the load to complete, e.g. `onLoad` callback to send that initial message.
 * Type files for Flow and TypeScript are included but not used by our projects so they may have issues. Please submit an issue or better yet a pull request with corrections.
 
 ## History
