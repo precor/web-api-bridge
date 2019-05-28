@@ -20,7 +20,10 @@ class Page1 extends Component {
     this.send = props.send;
     props.setApis([this]);
     this.state = {};
-    window.onresize = () => this.photoSelected(this.state.id);
+    window.onresize = () => {
+      const { id } = this.state;
+      this.photoSelected(id);
+    };
     this.photoSelected(undefined);
   }
 
@@ -48,16 +51,18 @@ class Page2 extends Component {
     this.state = {};
     this.displayNewPhoto();
     window.onresize = () => {
-      getPhoto(this.state.id).then(photoInfo => this.setState(photoInfo));
+      const { id } = this.state;
+      getPhoto(id).then(photoInfo => this.setState(photoInfo));
     };
   }
 
   displayNewPhoto = () => {
-    getPhoto().then((photoInfo) => this.setState(photoInfo));
+    getPhoto().then((photoInfo) => { this.setState(photoInfo); });
   }
 
   photoClicked = () => {
-    this.send('photoClicked', [this.state.id], false)
+    const { id } = this.state;
+    this.send('photoClicked', [id], false);
   }
 
   render() {
@@ -77,7 +82,7 @@ class Page2 extends Component {
 const apiComponents = {
   '/page1/': Page1,
   '/page2/': Page2,
-}
+};
 
 class App extends Component {
   constructor(props) {
@@ -87,6 +92,7 @@ class App extends Component {
     this.webApiBridge.target = window.parent;
     this.webApiBridge.origin = parentOrigin;
     this.webApiBridge.targetOrigin = parentOrigin;
+    this.send = this.webApiBridge.send.bind(this.webApiBridge);
     window.addEventListener('message', event => this.webApiBridge.onMessage(event, event.data));
     // enable to log all webapp messsages:
     // this.webApiBridge.listener = (message) => { console.log(message); };
@@ -99,12 +105,12 @@ class App extends Component {
   render() {
     if (!window.location.hash) return null;
     console.log(`webapp1 render ${window.location.hash.substr(1)}`);
-    const Component = apiComponents[window.location.hash.substr(1)];
+    const PageComponent = apiComponents[window.location.hash.substr(1)];
 
     return (
-      <Component
+      <PageComponent
         setApis={this.setApis}
-        send={this.webApiBridge.send.bind(this.webApiBridge)}
+        send={this.send}
       />
     );
   }

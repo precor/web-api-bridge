@@ -9,11 +9,14 @@ class MyIframeApi {
   constructor(send) {
     this.send = send;
   }
-  setOnWelcome = onWelcome => this.onWelcome = onWelcome;
-  welcome = welcome => {
+
+  setOnWelcome = (onWelcome) => { this.onWelcome = onWelcome; }
+
+  welcome = (welcome) => {
     console.log('got welcome message');
     this.onWelcome(welcome);
   }
+
   howOldAreYou = () => {
     console.log('asking for age');
     return this.send('howOldAreYou', null, true);
@@ -37,10 +40,10 @@ class App extends Component {
   }
 
   render() {
-    let { welcome, age } = this.state;
+    const { welcome, age } = this.state;
     if (welcome && !age) {
       this.myIframeApi.howOldAreYou()
-        .then(age => this.setState({ age }));
+        .then(updatedAge => this.setState({ age: updatedAge }));
     }
 
     return (

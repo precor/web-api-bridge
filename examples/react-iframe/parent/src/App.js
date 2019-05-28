@@ -54,9 +54,9 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <iframe
-              src={iframeUrl}
-              title='iframe communications'
-              ref={(iframe) => { this.setIframe(iframe); }}
+            src={iframeUrl}
+            title="iframe communications"
+            ref={(iframe) => { this.setIframe(iframe); }}
           />
           <p>parent window</p>
         </header>

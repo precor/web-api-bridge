@@ -28,18 +28,20 @@ class App extends Component {
     this.state = {};
     this.displayNewPhoto();
     window.onresize = () => {
-      getPhoto(this.state.id).then((photoInfo) => this.setState(photoInfo));
+      const { id } = this.state;
+      getPhoto(id).then((photoInfo) => { this.setState(photoInfo); });
     };
     // enable to log all webapp messsages:
     // this.webApiBridge.listener = (message) => { console.log(message); };
   }
 
   displayNewPhoto = () => {
-    getPhoto().then((photoInfo) => this.setState(photoInfo));
+    getPhoto().then((photoInfo) => { this.setState(photoInfo); });
   }
 
   photoClicked = () => {
-    this.send('photoClicked', [this.state.id], false)
+    const { id } = this.state;
+    this.send('photoClicked', [id], false);
   }
 
   render() {

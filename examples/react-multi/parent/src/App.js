@@ -40,11 +40,11 @@ class Api2 {
   };
 
   photoClicked = (id) => {
-    const api1Iframe = bridgedIframes.find(bridgedIframe => {
-      return bridgedIframe.props.api instanceof Api1
-    });
+    const api1Iframe = bridgedIframes.find(bridgedIframe => (
+      bridgedIframe.props.api instanceof Api1
+    ));
     api1Iframe.props.api.photoSelected(id);
-    bridgedIframes.forEach(bridgedIframe => {
+    bridgedIframes.forEach((bridgedIframe) => {
       if (bridgedIframe.props.api !== this && bridgedIframe.props.api instanceof Api2) {
         bridgedIframe.props.api.displayNewPhoto();
       }
@@ -72,19 +72,19 @@ class BridgedIframe extends Component {
     api.setSend(this.webApiBridge.send.bind(this.webApiBridge));
     bridgedIframes.push(this);
     this.webApiBridge.target = iframe.contentWindow;
-    window.addEventListener('message', event => {
+    window.addEventListener('message', (event) => {
       if (event && event.source === this.webApiBridge.target) {
         this.webApiBridge.onMessage(event, event.data);
       }
     });
-    iframe.onload = () => {
+    this.iframe.onload = () => {
       console.log(`${iframe.src} loaded`);
     };
   }
 
   render() {
     const { src, api, ...rest } = this.props;
-    console.log(`render iframe: ${src}`)
+    console.log(`render iframe: ${src}`);
 
     return (
       <iframe
@@ -92,41 +92,40 @@ class BridgedIframe extends Component {
         title={src}
         ref={(iframe) => { this.setIframe(iframe); }}
         scrolling="no"
-        { ...rest }
+        {...rest}
       />
     );
   }
 }
 
-class App extends Component {
-  render() {
-    console.log('render parent');
-    return (
+const App = () => {
+  console.log('render parent');
+  return (
+    <div>
       <div>
-        <div>
-          <BridgedIframe className="fullscreen-iframe"
-            src={api1App}
-            api={new Api1()}
-          />
+        <BridgedIframe
+          className="fullscreen-iframe"
+          src={api1App}
+          api={new Api1()}
+        />
+      </div>
+      <div className="container">
+        <div className="row">
+          {api2Apps.map((src, index) => (
+            <BridgedIframe
+              className="image-select"
+              key={index}
+              src={src}
+              api={new Api2()}
+            />
+          ))}
         </div>
-        <div className="container">
-          <div className="row">
-            {api2Apps.map((src, index) => (
-              <BridgedIframe
-                className="image-select"
-                key={index}
-                src={src}
-                api={new Api2()}
-              />
-            ))}
-          </div>
-          <div className="overlay-text">
-            Click on one of the 4 photos  
-          </div>
+        <div className="overlay-text">
+          Click on one of the 4 photos
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default App;
