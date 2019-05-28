@@ -34,6 +34,16 @@ photoClicked(32);
 setGrayscale(true);
 ```
 
+or any use of `as` that you want, e.g.
+
+```javascript
+import * as Api2 from 'webapp-library/LibType2/Api2';
+...
+const { photoClicked } = Api2;
+...
+photoClicked(32);
+```
+
 or any combination of the above, e.g.
 
 ```javascript
