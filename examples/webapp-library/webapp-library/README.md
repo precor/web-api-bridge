@@ -4,9 +4,9 @@
 
 The `webapp-library` implements an example functional style library for use by web apps running in iframes. This library should be built using `yarn build` before installing npm packages in the web apps.
 
-## Call Symantics
+## Call Semantics
 
-Web apps using the library can import functions that make api calls to the parent using standard module name space symantics.
+Web apps using the library can import functions that make api calls to the parent using standard module name space semantics.
 
 ```javascript
 import { libType2 } from 'webapp-library';
@@ -59,13 +59,13 @@ startApis().then(({ type, apis }) => {
 });
 ```
 
-`startApis()` takes two optional parameters, the origin of the parent and a callback that displays all web-api-bridge messages. The parent origin is used in this demo but in a real application the library should be able to set this to the correct value for both debug and production purposes. The callback is only usefull for testing purposes.
+`startApis()` takes two optional parameters, the origin of the parent and a callback that displays all web-api-bridge messages. The parent origin is used in this demo but in a real application the library should be able to set this to the correct value for both debug and production purposes. The callback is only useful for testing purposes.
 
 Internally the implementation waits for a `ready()` call from the parent that is sent when the webapp is loaded. It contains the type (a string) and an array apis (all strings). The implementation takes care of the race between whether the `ready()` call is received first or web app makes the `startApis()` call first.
 
 ## Callbacks
 
-Call backs are supported for each api using a `setCallback()` function.
+Callbacks are supported for each api using a `setCallback()` function.
 
 ```javascript
 import { common, api2 } from 'webapp-library/LibType2';
