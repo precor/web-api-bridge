@@ -4,6 +4,8 @@ import { common } from 'webapp-library/LibType2';
 import { photoClicked, setCallback } from 'webapp-library/LibType2/Api2';
 import './App.css';
 
+const parentOrigin = process.env.REACT_APP_PARENT_ORIGIN;
+
 const getPhoto = async ({ id, grayscale, blur }) => {
   let url = (id)
     ? `https://picsum.photos/id/${id}/${window.innerWidth}/${window.innerHeight}/`
@@ -41,7 +43,7 @@ class App extends Component {
       getPhoto({ id, grayscale, blur }).then(photoInfo => this.setState(photoInfo));
     };
 
-    startApis().then(({ type, apis }) => { console.log('startApis: ', type, apis); });
+    startApis(parentOrigin).then(({ type, apis }) => { console.log('startApis: ', type, apis); });
   }
 
   photoClicked = () => {

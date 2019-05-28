@@ -2,12 +2,12 @@ import WebApiBridge from '@precor/web-api-bridge';
 import { setSend } from './apis/Send';
 
 class WebAppLibrary {
-  constructor(origin, logMessages) {
+  constructor() {
     this.webApiBridge = new WebApiBridge();
     this.webApiBridge.target = window.parent;
-    const originSubstring = origin || (process.env.NODE_ENV === 'development') ? ':3000' : 'https://known.webapp.lib.origin';
-    const targetOrigin = origin || (process.env.NODE_ENV === 'development') ? '*' : 'https://known.webapp.lib.origin';
-    console.log(`origin : ${originSubstring}, targetOrigin : ${targetOrigin}`);
+    const originSubstring = (process.env.NODE_ENV === 'development') ? ':3000' : 'https://known.webapp.lib.origin';
+    const targetOrigin = (process.env.NODE_ENV === 'development') ? '*' : 'https://known.webapp.lib.origin';
+    console.log(`default origin: ${originSubstring}, targetOrigin : ${targetOrigin}`);
     this.webApiBridge.origin = originSubstring;
     this.webApiBridge.targetOrigin = targetOrigin;
     setSend(this.webApiBridge.send.bind(this.webApiBridge));
@@ -17,7 +17,6 @@ class WebAppLibrary {
         this.webApiBridge.onMessage(event, event.data);
       }
     });
-    this.webApiBridge.listener = logMessages;
   }
 
   ready = (libInfo) => { // libInfo is type and apis
@@ -32,8 +31,14 @@ class WebAppLibrary {
     if (this.setStartApisResolve) this.setStartApisResolve(libInfo);
   }
 
-  setStartApisResolve = (resolve) => {
+  setStartApisResolve = (resolve, origin, logMessages) => {
     this.setStartApisResolve = resolve;
+    if (origin) {
+      this.webApiBridge.origin = origin;
+      this.webApiBridge.targetOrigin = origin;
+      console.log(`new origin : ${origin}, targetOrigin : ${origin}`);
+    }
+    this.webApiBridge.listener = logMessages;
     if (this.libInfo) resolve(this.libInfo);
   }
 }
@@ -41,9 +46,9 @@ class WebAppLibrary {
 const webAppLibrary = new WebAppLibrary();
 
 // eslint-disable-next-line import/prefer-default-export
-export const startApis = () => (
+export const startApis = (origin, logMessages) => (
   new Promise((resolve) => {
-    webAppLibrary.setStartApisResolve(resolve);
+    webAppLibrary.setStartApisResolve(resolve, origin, logMessages);
   })
 );
 
