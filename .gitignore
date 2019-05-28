@@ -1,12 +1,5 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
-# example library
-/examples/webapp-library/webapp-library/index.js
-/examples/webapp-library/webapp-library/apis
-/examples/webapp-library/webapp-library/LibType1
-/examples/webapp-library/webapp-library/LibType2
-/examples/webapp-library/webapp-library/node_modules
-
 # dependencies
 /node_modules
 
