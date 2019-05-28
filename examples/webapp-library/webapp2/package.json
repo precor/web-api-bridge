@@ -1,0 +1,31 @@
+{
+  "name": "webapp2",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": ".",
+  "dependencies": {
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-scripts": "2.1.8",
+    "webapp-library": "../webapp-library"
+  },
+  "scripts": {
+    "start": "cross-env PORT=3300 BROWSER=none react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "deploy:s3": "aws --profile default s3 sync build/ s3://webapp2.react-multi.com --delete",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "cross-env": "^5.2.0"
+  }
+}

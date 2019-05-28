@@ -1,0 +1,24 @@
+body {
+  margin: 0;
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  text-align: center;
+}
+
+input {
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+.top-overlay {
+  color: white;
+  font: 9px Helvetica;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
