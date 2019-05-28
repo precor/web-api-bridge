@@ -4,9 +4,9 @@
 
 The `webapp-library` implements an example functional style library for use by web apps running in iframes. This library should be built using `yarn build` before installing npm packages in the web apps.
 
-## Call Semantics
+## Call Syntax
 
-Web apps using the library can import functions that make api calls to the parent using standard module name space semantics.
+Web apps using the library can import functions that make api calls to the parent using standard module name space syntax.
 
 ```javascript
 import { libType2 } from 'webapp-library';
