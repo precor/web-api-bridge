@@ -28,11 +28,11 @@ class WebAppLibrary {
       this.webApiBridge.apis.push(api.incomingCalls);
     });
     this.libInfo = libInfo;
-    if (this.setStartApisResolve) this.setStartApisResolve(libInfo);
+    if (this.startApisResolve) this.startApisResolve(libInfo);
   }
 
   setStartApisResolve = (resolve, origin, logMessages) => {
-    this.setStartApisResolve = resolve;
+    this.startApisResolve = resolve;
     if (origin) {
       this.webApiBridge.origin = origin;
       this.webApiBridge.targetOrigin = origin;
