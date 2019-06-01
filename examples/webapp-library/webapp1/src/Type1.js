@@ -1,45 +1,28 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { common } from 'webapp-library/LibType2';
 import { setCallback } from 'webapp-library/LibType1/Api1';
-import getPhoto from './getPhoto';
+import usePicsum from './usePicsum';
 
-class Type1 extends Component {
-  constructor(props) {
-    super(props);
 
-    this.state = {};
+const Type1 = () => {
+  console.log('render webapp1.Type1');
+  const [photoInfo, setPhotoInfo] = usePicsum();
+  const { url } = photoInfo;
 
-    setCallback('photoSelected', this.photoSelected);
+  useEffect(() => {
+    setCallback('photoSelected', id => setPhotoInfo(pi => (
+      { ...pi, id }
+    )));
+    common.setCallback('displayGrayscale', displayGrayscale => setPhotoInfo(pi => (
+      { ...pi, grayscale: displayGrayscale }
+    )));
+    common.setCallback('displayBlur', displayBlur => setPhotoInfo(pi => (
+      { ...pi, blur: displayBlur }
+    )));
+  }, [setPhotoInfo]);
 
-    window.onresize = () => {
-      const { id } = this.state;
-      this.photoSelected(id);
-    };
-    common.setCallback('displayGrayscale', (grayscale) => {
-      const { id, blur } = this.state;
-      getPhoto({ id, grayscale, blur }).then(photoInfo => this.setState(photoInfo));
-    });
-    common.setCallback('displayBlur', (blur) => {
-      const { id, grayscale } = this.state;
-      getPhoto({ id, grayscale, blur }).then(photoInfo => this.setState(photoInfo));
-    });
-    this.photoSelected(undefined);
-  }
-
-  photoSelected = (id) => {
-    const { grayscale, blur } = this.state;
-    getPhoto({ id, grayscale, blur }).then(photoInfo => this.setState(photoInfo));
-  };
-
-  render() {
-    console.log('render webapp1.Type1');
-    const { imageUrl } = this.state;
-    if (!imageUrl) return null;
-
-    return (
-      <img src={imageUrl} alt="" />
-    );
-  }
-}
+  if (!url) return null;
+  return <img src={url} alt="" />;
+};
 
 export default Type1;
