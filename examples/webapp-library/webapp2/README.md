@@ -1,4 +1,4 @@
-# webapp-library/webapp1
+# webapp-library/webapp2
 
 [demo](https://precor.github.io/web-api-bridge/examples/webapp-library/DEMO.html)
 
