@@ -159,7 +159,7 @@ class WebApiBridge {
     } = response;
     if (this.sendCompletions[msgId]) {
       if (error) {
-        this.sendCompletions[msgId].reject(response);
+        this.sendCompletions[msgId].reject(response.error);
       } else {
         this.sendCompletions[msgId].resolve.apply(this, args);
       }
