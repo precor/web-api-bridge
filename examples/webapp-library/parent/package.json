@@ -1,13 +1,13 @@
 {
   "name": "parent",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "homepage": ".",
   "dependencies": {
-    "@precor/web-api-bridge": "^2.0.0",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-scripts": "2.1.8"
+    "@precor/web-api-bridge": "^2.1.1",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-scripts": "^3.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -32,6 +32,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "eslint-plugin-react-hooks": "^1.6.0"
+    "eslint": "^6.1.0",
+    "eslint-plugin-react-hooks": "^1.7.0"
   }
 }

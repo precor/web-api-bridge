@@ -78,16 +78,16 @@ Internally the implementation waits for a `ready()` call from the parent that is
 Callbacks are supported for each api using a `setCallback()` function.
 
 ```javascript
-import { common, api2 } from 'webapp-library/LibType2';
+import { setCallback } from 'webapp-library/LibType2';
 ...
 // sometime during app initialization
-common.setCallback('displayGrayscale', (grayscale) => {
+setCallback('displayGrayscale', (grayscale) => {
   console.log('display photo in grayscale: ', grayscale);
   // handle the callback
   }
 });
 
-api2.setCallback('displayNewPhoto', () => {
+setCallback('displayNewPhoto', () => {
   console.log('time to display a new photo');
   // handle the callback
   }

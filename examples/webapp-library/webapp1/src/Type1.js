@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { common } from 'webapp-library/LibType2';
-import { setCallback } from 'webapp-library/LibType1/Api1';
+import { setCallback as commonSetCallback } from 'webapp-library/LibType2';
+import { setCallback } from 'webapp-library/LibType1';
 import usePicsum from './usePicsum';
 
 
@@ -13,10 +13,10 @@ const Type1 = () => {
     setCallback('photoSelected', id => setPhotoInfo(pi => (
       { ...pi, id }
     )));
-    common.setCallback('displayGrayscale', displayGrayscale => setPhotoInfo(pi => (
+    commonSetCallback('displayGrayscale', displayGrayscale => setPhotoInfo(pi => (
       { ...pi, grayscale: displayGrayscale }
     )));
-    common.setCallback('displayBlur', displayBlur => setPhotoInfo(pi => (
+    commonSetCallback('displayBlur', displayBlur => setPhotoInfo(pi => (
       { ...pi, blur: displayBlur }
     )));
   }, [setPhotoInfo]);
