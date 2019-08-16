@@ -1,5 +1,7 @@
-# es2015 source info
-.babelrc
+# dependencies
+/node_modules
+
+# non-transpiled source
 /src
 
 # teststuff
@@ -9,13 +11,19 @@
 # website docs
 /docs
 
+# example apps
+/examples
+
 # misc
+babel.config.js
+_config.yml
+.markdownlint.json
 .eslintignore
 .eslintrc.json
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
-
 yarn-debug.log*
 yarn-error.log*
+yarn.lock
