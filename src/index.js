@@ -159,7 +159,7 @@ class WebApiBridge {
     } = response;
     if (this.sendCompletions[msgId]) {
       if (error) {
-        this.sendCompletions[msgId].reject(response.error);
+        this.sendCompletions[msgId].reject(new Error(response.error));
       } else {
         this.sendCompletions[msgId].resolve.apply(this, args);
       }
@@ -183,7 +183,7 @@ class WebApiBridge {
     const response = request;
     try {
       // process the request
-      const api = this.apis.find(elem => elem[request.targetFunc]);
+      const api = this.apis.find((elem) => elem[request.targetFunc]);
       if (!api) {
         console.warn(`${request.targetFunc} function does not exist`);
         throw new Error('function does not exist');

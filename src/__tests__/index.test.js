@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 // Jest unit tests
 import WebApiBridge from '../index';
 
@@ -254,7 +255,7 @@ describe('WebApiBridge', () => {
       wab.onMessage('message', JSON.stringify(resultFuncMsg));
     });
 
-    return wab.send('testFunc', [], true).then(data => expect(data).toBe(undefined));
+    return wab.send('testFunc', [], true).then((data) => expect(data).toBe(undefined));
   });
 
   it('sends an api request that is resolved with a result, given other side returns one', () => {
@@ -263,7 +264,7 @@ describe('WebApiBridge', () => {
       wab.onMessage('message', JSON.stringify(resultFuncMsg));
     });
 
-    return wab.send('testFunc', [], true).then(data => expect(data).toEqual(apiResultObject));
+    return wab.send('testFunc', [], true).then((data) => expect(data).toEqual(apiResultObject));
   });
 
   it('rejects a send Promise, given an error response was received', () => {
@@ -272,7 +273,7 @@ describe('WebApiBridge', () => {
       wab.onMessage('message', JSON.stringify(resultFuncMsg));
     });
 
-    return wab.send('resultFunc', [], true).catch(e => expect(e).toEqual(resultFuncMsg));
+    return wab.send('resultFunc', [], true).catch((e) => expect(e.message).toEqual(errorMessage));
   });
 
   it('displays a warning, given we send an api request that caused a remote error', () => {
