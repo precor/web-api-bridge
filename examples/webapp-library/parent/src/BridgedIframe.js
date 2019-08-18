@@ -109,7 +109,7 @@ const BridgedIframe = ({
       console.log(`${iframe.src} loaded`);
       setTimeout(() => {
         send('ready', [{ type, apis }], false);        
-      }, 30);
+      }, 100);
     };
   };
 
