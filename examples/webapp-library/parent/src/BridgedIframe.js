@@ -107,7 +107,9 @@ const BridgedIframe = ({
     });
     iframe.onload = () => {
       console.log(`${iframe.src} loaded`);
-      send('ready', [{ type, apis }], false);
+      setTimeout(() => {
+        send('ready', [{ type, apis }], false);        
+      }, 30);
     };
   };
 
