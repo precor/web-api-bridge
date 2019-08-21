@@ -1,17 +1,13 @@
+/* eslint-disable import/prefer-default-export */
 import {
   incomingCalls as commonIncomingCalls,
   setCallback as commonSetCallback,
 } from './Common/callbacks';
 
 import {
-  incomingCalls as api2IncomingCalls,
+  // incomingCalls as api2IncomingCalls,
   setCallback as api2SetCallback,
 } from './Api2/callbacks';
-
-export const incomingCalls = {
-  ...commonIncomingCalls,
-  ...api2IncomingCalls,
-};
 
 export const setCallback = (funcName, implementation) => {
   if (commonIncomingCalls[funcName] !== undefined) {

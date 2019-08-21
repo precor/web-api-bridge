@@ -11,6 +11,15 @@ const createLibInstance = ({ webApiBridge, apis }) => ({
   },
 });
 
+const registeredSend = (bridgeSend, outgoingCalls) => {
+  return (funcName, args, wantResponse) => {
+  if (outgoingCalls[funcName]) { 
+    return bridgeSend(funcName, args, wantResponse);
+  }
+  console.log(`${funcName} was not registered`)
+};
+};
+
 // to keep track of created libs that use apis to communicate
 class libInstances {
   static instances = [];
@@ -26,9 +35,14 @@ class libInstances {
 }
 
 class Common {
-  setSend = (send) => {
-    this.send = send;
-  };
+  constructor() {
+    this.outgoingCalls = {
+      displayBlur: null,
+      displayGrayscale: null,
+    };
+  }
+
+  setSend = (bridgeSend) => this.send = registeredSend(bridgeSend, this.outgoingCalls);
 
   displayBlur = (blur) => {
     this.send('displayBlur', [blur], false);
@@ -40,9 +54,13 @@ class Common {
 }
 
 class Api1 {
-  setSend = (send) => {
-    this.send = send;
-  };
+  constructor() {
+    this.outgoingCalls = {
+      photoSelected: null,
+    };
+  }
+
+  setSend = (bridgeSend) => this.send = registeredSend(bridgeSend, this.outgoingCalls);
 
   photoSelected = (id) => {
     this.send('photoSelected', [id], false);
@@ -50,9 +68,13 @@ class Api1 {
 }
 
 class Api2 {
-  setSend = (send) => {
-    this.send = send;
-  };
+  constructor() {
+    this.outgoingCalls = {
+      displayNewPhoto: null,
+    };
+  }
+
+  setSend = (bridgeSend) => this.send = registeredSend(bridgeSend, this.outgoingCalls);
 
   photoClicked = (id) => {
     libInstances.executeOnType('Api1', api => api.photoSelected(id));
@@ -65,9 +87,7 @@ class Api2 {
 }
 
 class Api3 {
-  setSend = (send) => {
-    this.send = send;
-  };
+  setSend = () => {};
 
   setGrayscale = (grayscale) => {
     libInstances.executeOnType('Common', api => api.displayGrayscale(grayscale));
@@ -82,46 +102,71 @@ const apiMap = {
   Common, Api1, Api2, Api3,
 };
 
-const BridgedIframe = ({
-  src, type, apis, ...rest
-}) => {
-  console.log(`render iframe: ${src}`);
-
-  const setIframe = (iframe) => {
+class BridgedIframe extends React.Component {
+  constructor(props) {
+    super(props);
+    const { src, type, apis } = props;
     const url = new URL(src);
-    const webApiBridge = new WebApiBridge();
-    webApiBridge.origin = url.origin;
-    webApiBridge.targetOrigin = url.origin;
-    const send = webApiBridge.send.bind(webApiBridge);
-    libInstances.add(createLibInstance({ webApiBridge, apis }));
-    webApiBridge.target = iframe.contentWindow;
+    this.type = type;
+    this.apis = apis;
+    this.webApiBridge = new WebApiBridge();
+    this.webApiBridge.origin = url.origin;
+    this.webApiBridge.targetOrigin = url.origin;
+    const send = this.webApiBridge.send.bind(this.webApiBridge);
+    libInstances.add(createLibInstance({ webApiBridge: this.webApiBridge, apis }));
     window.addEventListener('message', (event) => {
-      if (event && event.source === webApiBridge.target) {
-        webApiBridge.onMessage(event, event.data);
+      if (event && event.source === this.webApiBridge.target) {
+        this.webApiBridge.onMessage(event, event.data);
       }
     });
-    webApiBridge.apis = apis.map((apiClassName) => {
+    this.webApiBridge.apis = apis.map((apiClassName) => {
       const api = new apiMap[apiClassName]();
       api.setSend(send);
       return api;
     });
-    iframe.onload = () => {
-      console.log(`${iframe.src} loaded`);
-      setTimeout(() => {
-        send('ready', [{ type, apis }], false);        
-      }, 100);
-    };
+    this.webApiBridge.apis.push(this);
+  }
+
+  startApis = () => (
+    new Promise(resolve => resolve({ type: this.type, apis: this.apis }))
+  );
+
+  registerCallback = (funcName) => (
+    new Promise(resolve => {
+      const api = this.webApiBridge.apis.find((apiInstance) => (
+        apiInstance.outgoingCalls[funcName]) !== undefined
+      );
+      if (!api) {
+        throw new Error (`registerCallback failed, ${funcName} does not exist`);
+      }
+      api.outgoingCalls[funcName] = true;
+      resolve();
+    })
+  );
+
+  setIframe = (iframe) => {
+    if (!iframe || this.iframe) {
+      return;
+    }
+    this.iframe = iframe;
+    this.webApiBridge.target = iframe.contentWindow;
   };
 
-  return (
-    <iframe
-      src={src}
-      title={src}
-      ref={(iframe) => { setIframe(iframe); }}
-      scrolling="no"
-      {...rest}
-    />
-  );
+  render() {
+    const {
+      src, type, apis, ...rest
+    } = this.props;
+    console.log(`render iframe: ${src}`);
+    return (
+      <iframe
+        src={src}
+        title={src}
+        ref={(iframe) => { this.setIframe(iframe); }}
+        scrolling="no"
+        {...rest}
+      />
+    );
+  }
 };
 
 export default BridgedIframe;

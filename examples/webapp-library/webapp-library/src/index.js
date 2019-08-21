@@ -1,5 +1,5 @@
 import WebApiBridge from '@precor/web-api-bridge';
-import { setSend } from './apis/Send';
+import { send, setSend } from './apis/send';
 
 class WebAppLibrary {
   constructor() {
@@ -19,27 +19,21 @@ class WebAppLibrary {
     });
   }
 
-  ready = (libInfo) => { // libInfo is type and apis
-    console.log('ready', libInfo);
-    const { apis } = libInfo;
-    apis.forEach((apiName) => {
-      // eslint-disable-next-line global-require, import/no-dynamic-require
-      const api = require(`./apis/${apiName}`);
-      this.webApiBridge.apis.push(api.incomingCalls);
-    });
-    this.libInfo = libInfo;
-    if (this.startApisResolve) this.startApisResolve(libInfo);
-  }
-
   setStartApisResolve = (resolve, origin, logMessages) => {
-    this.startApisResolve = resolve;
     if (origin) {
       this.webApiBridge.origin = origin;
       this.webApiBridge.targetOrigin = origin;
-      console.log(`new origin : ${origin}, targetOrigin : ${origin}`);
     }
     this.webApiBridge.listener = logMessages;
-    if (this.libInfo) resolve(this.libInfo);
+    send('startApis', null, true).then((libInfo) => {
+      const { apis } = libInfo;
+      apis.forEach((apiName) => {
+        // eslint-disable-next-line global-require, import/no-dynamic-require
+        const api = require(`./apis/${apiName}`);
+        this.webApiBridge.apis.push(api.incomingCalls);
+      });
+      resolve(libInfo);
+    });
   }
 }
 
