@@ -19,20 +19,20 @@ class WebAppLibrary {
     });
   }
 
-  setStartApisResolve = (resolve, origin, logMessages) => {
+  setStartApisResolve = (origin, logMessages) => {
     if (origin) {
       this.webApiBridge.origin = origin;
       this.webApiBridge.targetOrigin = origin;
     }
     this.webApiBridge.listener = logMessages;
-    send('startApis', null, true).then((libInfo) => {
+    return send('startApis', null, true).then((libInfo) => {
       const { apis } = libInfo;
       apis.forEach((apiName) => {
         // eslint-disable-next-line global-require, import/no-dynamic-require
         const api = require(`./apis/${apiName}`);
         this.webApiBridge.apis.push(api.incomingCalls);
       });
-      resolve(libInfo);
+      return Promise.resolve(libInfo);
     });
   }
 }
@@ -40,11 +40,7 @@ class WebAppLibrary {
 const webAppLibrary = new WebAppLibrary();
 
 // eslint-disable-next-line import/prefer-default-export
-export const startApis = (origin, logMessages) => (
-  new Promise((resolve) => {
-    webAppLibrary.setStartApisResolve(resolve, origin, logMessages);
-  })
-);
+export const startApis = webAppLibrary.setStartApisResolve;
 
 export * as libType1 from './LibType1';
 export * as libType2 from './LibType2';

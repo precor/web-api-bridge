@@ -11,13 +11,11 @@ const createLibInstance = ({ webApiBridge, apis }) => ({
   },
 });
 
-const registeredSend = (bridgeSend, outgoingCalls) => {
-  return (funcName, args, wantResponse) => {
+const registeredSend = (bridgeSend, outgoingCalls) => (funcName, args, wantResponse) => {
   if (outgoingCalls[funcName]) { 
     return bridgeSend(funcName, args, wantResponse);
   }
   console.log(`${funcName} was not registered`)
-};
 };
 
 // to keep track of created libs that use apis to communicate
