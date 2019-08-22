@@ -19,7 +19,7 @@ class WebAppLibrary {
     });
   }
 
-  setStartApisResolve = (origin, logMessages) => {
+  startApis = (origin, logMessages) => {
     if (origin) {
       this.webApiBridge.origin = origin;
       this.webApiBridge.targetOrigin = origin;
@@ -40,7 +40,7 @@ class WebAppLibrary {
 const webAppLibrary = new WebAppLibrary();
 
 // eslint-disable-next-line import/prefer-default-export
-export const startApis = webAppLibrary.setStartApisResolve;
+export const { startApis } = webAppLibrary;
 
 export * as libType1 from './LibType1';
 export * as libType2 from './LibType2';
