@@ -1,28 +1,31 @@
-
+/* eslint-disable max-classes-per-file */
 import React from 'react';
 import WebApiBridge from '@precor/web-api-bridge';
+import { arrayOf, string } from 'prop-types';
 
 // createLibInstance factory, libs use apis to communicate through a bridge
 const createLibInstance = ({ webApiBridge, apis }) => ({
   webApiBridge,
   apis,
   findApiOfType(apiName) {
-    return this.webApiBridge.apis.find(api => (api instanceof apiMap[apiName]));
+    // eslint-disable-next-line no-use-before-define
+    return this.webApiBridge.apis.find((api) => (api instanceof apiMap[apiName]));
   },
 });
 
 const registeredSend = (bridgeSend, outgoingCalls) => (funcName, args, wantResponse) => {
-  if (outgoingCalls[funcName]) { 
+  if (outgoingCalls[funcName]) {
     return bridgeSend(funcName, args, wantResponse);
   }
-  console.log(`${funcName} was not registered`)
+  console.log(`${funcName} was not registered`);
+  return undefined;
 };
 
 // to keep track of created libs that use apis to communicate
 class libInstances {
   static instances = [];
 
-  static add = libInstance => libInstances.instances.push(libInstance);
+  static add = (libInstance) => libInstances.instances.push(libInstance);
 
   static executeOnType = (apiName, fn) => {
     libInstances.instances.forEach((instance) => {
@@ -40,7 +43,9 @@ class Common {
     };
   }
 
-  setSend = (bridgeSend) => this.send = registeredSend(bridgeSend, this.outgoingCalls);
+  setSend = (bridgeSend) => {
+    this.send = registeredSend(bridgeSend, this.outgoingCalls);
+  }
 
   displayBlur = (blur) => {
     this.send('displayBlur', [blur], false);
@@ -58,7 +63,10 @@ class Api1 {
     };
   }
 
-  setSend = (bridgeSend) => this.send = registeredSend(bridgeSend, this.outgoingCalls);
+
+  setSend = (bridgeSend) => {
+    this.send = registeredSend(bridgeSend, this.outgoingCalls);
+  }
 
   photoSelected = (id) => {
     this.send('photoSelected', [id], false);
@@ -72,10 +80,13 @@ class Api2 {
     };
   }
 
-  setSend = (bridgeSend) => this.send = registeredSend(bridgeSend, this.outgoingCalls);
+
+  setSend = (bridgeSend) => {
+    this.send = registeredSend(bridgeSend, this.outgoingCalls);
+  }
 
   photoClicked = (id) => {
-    libInstances.executeOnType('Api1', api => api.photoSelected(id));
+    libInstances.executeOnType('Api1', (api) => api.photoSelected(id));
     libInstances.executeOnType('Api2', (api) => { if (api !== this) api.displayNewPhoto(); });
   };
 
@@ -88,11 +99,11 @@ class Api3 {
   setSend = () => {};
 
   setGrayscale = (grayscale) => {
-    libInstances.executeOnType('Common', api => api.displayGrayscale(grayscale));
+    libInstances.executeOnType('Common', (api) => api.displayGrayscale(grayscale));
   };
 
   setBlur = (blur) => {
-    libInstances.executeOnType('Common', api => api.displayBlur(blur));
+    libInstances.executeOnType('Common', (api) => api.displayBlur(blur));
   };
 }
 
@@ -126,16 +137,15 @@ class BridgedIframe extends React.Component {
   }
 
   startApis = () => (
-    new Promise(resolve => resolve({ type: this.type, apis: this.apis }))
+    new Promise((resolve) => resolve({ type: this.type, apis: this.apis }))
   );
 
   registerCallback = (funcName) => (
-    new Promise(resolve => {
+    new Promise((resolve) => {
       const api = this.webApiBridge.apis.find((apiInstance) => (
-        apiInstance.outgoingCalls[funcName]) !== undefined
-      );
+        apiInstance.outgoingCalls[funcName]) !== undefined);
       if (!api) {
-        throw new Error (`registerCallback failed, ${funcName} does not exist`);
+        throw new Error(`registerCallback failed, ${funcName} does not exist`);
       }
       api.outgoingCalls[funcName] = true;
       resolve();
@@ -165,6 +175,12 @@ class BridgedIframe extends React.Component {
       />
     );
   }
+}
+
+BridgedIframe.propTypes = {
+  src: string.isRequired,
+  type: string.isRequired,
+  apis: arrayOf(string).isRequired,
 };
 
 export default BridgedIframe;

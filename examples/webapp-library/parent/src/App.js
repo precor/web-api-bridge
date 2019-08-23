@@ -30,6 +30,7 @@ const App = () => {
           {LibType2Apps.map(({ src, type, apis }, index) => (
             <BridgedIframe
               className="image-select"
+              // eslint-disable-next-line react/no-array-index-key
               key={`LibType2_${index}`}
               src={src}
               type={type}
