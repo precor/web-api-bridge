@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { startApis } from 'webapp-library';
+import { startApis, stopApis } from 'webapp-library';
 import Type1 from './Type1';
 import Type2 from './Type2';
 import './App.css';
@@ -16,6 +16,7 @@ const App = () => {
       setCanModPhotos(!!apis.find(api => api === 'Api3'));
       setLoadedType(type);
     });
+    return stopApis;
   }, []);
 
   if (!loadedType) return null;

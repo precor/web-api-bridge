@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { startApis } from 'webapp-library';
+import { startApis, stopApis } from 'webapp-library';
 import { setCallback } from 'webapp-library/LibType2';
 import { photoClicked } from 'webapp-library/LibType2/Api2';
 import './App.css';
@@ -23,6 +23,7 @@ const App = () => {
     setCallback('displayBlur', displayBlur => setPhotoInfo(pi => (
       { ...pi, blur: displayBlur }
     )));
+    return stopApis;
   }, [setPhotoInfo]);
 
   if (!url) return null;

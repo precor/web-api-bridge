@@ -123,11 +123,7 @@ class BridgedIframe extends React.Component {
     this.webApiBridge.targetOrigin = url.origin;
     const send = this.webApiBridge.send.bind(this.webApiBridge);
     libInstances.add(createLibInstance({ webApiBridge: this.webApiBridge, apis }));
-    window.addEventListener('message', (event) => {
-      if (event && event.source === this.webApiBridge.target) {
-        this.webApiBridge.onMessage(event, event.data);
-      }
-    });
+    window.addEventListener('message', this.messageListener);
     this.webApiBridge.apis = apis.map((apiClassName) => {
       const api = new apiMap[apiClassName]();
       api.setSend(send);
@@ -135,6 +131,24 @@ class BridgedIframe extends React.Component {
     });
     this.webApiBridge.apis.push(this);
   }
+
+  componentWillUnmount() {
+    this.webApiBridge.apis.forEach((apiObj) => {
+      const api = apiObj;
+      if (api.outgoingCalls) {
+        Object.keys(api.outgoingCalls).forEach((funcName) => {
+          api.outgoingCalls[funcName] = null;
+        });
+      }
+    });
+    window.removeEventListener('message', this.messageListener);
+  }
+
+  messageListener = (event) => {
+    if (event && event.source === this.webApiBridge.target) {
+      this.webApiBridge.onMessage(event, event.data);
+    }
+  };
 
   startApis = () => (
     new Promise((resolve) => resolve({ type: this.type, apis: this.apis }))
