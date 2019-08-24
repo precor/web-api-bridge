@@ -18,7 +18,7 @@ const registeredSend = (bridgeSend, outgoingCalls) => (funcName, args, wantRespo
     return bridgeSend(funcName, args, wantResponse);
   }
   console.log(`${funcName} was not registered`);
-  return undefined;
+  return null;
 };
 
 // to keep track of created libs that use apis to communicate
@@ -140,14 +140,14 @@ class BridgedIframe extends React.Component {
     new Promise((resolve) => resolve({ type: this.type, apis: this.apis }))
   );
 
-  registerCallback = (funcName) => (
+  registerCallback = (funcName, implemented) => (
     new Promise((resolve) => {
       const api = this.webApiBridge.apis.find((apiInstance) => (
         apiInstance.outgoingCalls[funcName]) !== undefined);
       if (!api) {
         throw new Error(`registerCallback failed, ${funcName} does not exist`);
       }
-      api.outgoingCalls[funcName] = true;
+      api.outgoingCalls[funcName] = implemented;
       resolve();
     })
   );

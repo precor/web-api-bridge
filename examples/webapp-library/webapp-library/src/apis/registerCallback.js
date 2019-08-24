@@ -5,8 +5,11 @@ export const registerCallback = (incomingCalls, funcName, implementation) => {
   if (incomingCalls[funcName] === undefined) {
     return Promise.reject(new Error('unknown function'));
   }
+  if (implementation !== null && typeof implementation !== 'function') {
+    return Promise.reject(new Error(`implementation of ${funcName} must be null or a valid function`));
+  }
   incomingApi[funcName] = implementation;
-  return send('registerCallback', [funcName], true);
+  return send('registerCallback', [funcName, !!implementation], true);
 };
 
 export default registerCallback;
