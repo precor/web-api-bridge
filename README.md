@@ -37,7 +37,7 @@ import { Message } from '@precor/web-api-bridge/types/shapes'
 
 ## Documentation
 
-[WebApiBridge Class](https://precor.github.io/web-api-bridge/docs/WEBAPIBRIDGE.md)
+[WebApiBridge Class](https://precor.github.io/web-api-bridge/docs/WEBAPIBRIDGE.html)
 
 ## Examples
 
