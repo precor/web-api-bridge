@@ -1,14 +1,9 @@
 /**
  * @class
  * @description
- * `WebApiBridge` is a plain JavaScript class that can be used in a React Native application and
- * in a web app running in a [react-native-webview](https://github.com/react-native-community/react-native-webview)
- * to support a function call API between the two. [React Native WebView](https://facebook.github.io/react-native/docs/webview.html)
- * will also still work. It can also be used as an IPC mechanism between other windows, for example,
- * a web page and an iframe. The intention is for this code to be used in a web app that is using
- * either a framework or pure JavaScript so framework code was kept out of this class.
- *
- * WebApiBridge works by passing `Message` objects between Javascript processes.
+ * `WebApiBridge` provides a function call API interface between Javascript processes
+ * that pass `MessageEvent` objects such as a a web page and an iframe or a React Native
+ * application and a web app running in a [react-native-webview](https://github.com/react-native-community/react-native-webview).
  *
  * @example <caption>Example React Native API implementation using a `WebApiBridge`.</caption>
  * import React from 'react';
@@ -180,7 +175,9 @@ class WebApiBridge {
   }
 
   handleRequest(request) {
-    const response = request;
+    // if the listener is active then console.log() may keep a reference to the object
+    // and log it at some time in the future so the request needs to be copied
+    const response = { ...request };
     try {
       // process the request
       const api = this.apis.find((elem) => elem[request.targetFunc]);
@@ -213,8 +210,8 @@ class WebApiBridge {
   /**
    * Function that should get called when an event containing a message is received
    * from the other side.
-   * @param {object} event - Incomming event.
-   * @param {string} data - The incoming data received, which is a stingified JSON
+   * @param {object} event Incomming event.
+   * @param {string} data The incoming data received, which is a stingified JSON
    * message. Defaults to `event.nativeEvent.data`, which is correct for React Native
    * but needs to be overridden for web apps with `event.data`.
    */
@@ -249,13 +246,13 @@ class WebApiBridge {
 
   /**
    * Invoke a function on the remote.
-   * Returns a `Promise` object.
-   * @param {string} targetFunc - A string of the name of the api function to execute.
-   * @param {Array} args - An array of parameters to be passsed to the `targetFun`.
-   * @param {boolean} wantResult - Boolean to indicate if a `Promise` should be `fullfilled`
+   *
+   * @param {string} targetFunc A string of the name of the api function to execute.
+   * @param {Array} args An array of parameters to be passsed to the `targetFun`.
+   * @param {boolean} wantResult Boolean to indicate if a `Promise` should be `fullfilled`
    *    or `rejected` after the remote api completes the call. If `false` then no `Promise`
    *    will be `fullfilled`.
-   * @returns {Promise} Promise object if `wantResult` is `true`, `null` if not.
+   * @returns {Promise} if `wantResult` is `true`, `void` if not.
    */
   send(targetFunc, args, wantResult = false) {
     const msgId = this.newMsgId();
