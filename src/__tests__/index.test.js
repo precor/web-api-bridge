@@ -57,24 +57,28 @@ describe('WebApiBridge', () => {
 
   // validate an origin failure
 
-  it('returns right away if the event is from a different origin', () => {
+  it('silently returns if the event is from a different origin', () => {
+    console.warn = jest.fn();
     wab.origin = ':3000';
     wab.onMessage(eventOriginTest);
     expect(testTarget.postMessage).not.toHaveBeenCalled();
+    expect(console.warn).not.toHaveBeenCalled();
   });
 
   // validate receiving data from the other side
 
-  it('returns right away if an incomming message is not a string', () => {
+  it('silently returns if an incomming message is not a string', () => {
     console.warn = jest.fn();
     wab.onMessage('message', { A: 1, B: 2 });
     expect(testTarget.postMessage).not.toHaveBeenCalled();
+    expect(console.warn).not.toHaveBeenCalled();
   });
 
-  it('returns right away if an incomming message does not have a targetFunc property', () => {
+  it('silently returns if an incomming message does not have a targetFunc property', () => {
     console.warn = jest.fn();
     wab.onMessage('message', JSON.stringify({ A: 1, B: 2 }));
     expect(testTarget.postMessage).not.toHaveBeenCalled();
+    expect(console.warn).not.toHaveBeenCalled();
   });
 
   it('displays a console.warn(), given an incomming message is not valid JSON', () => {

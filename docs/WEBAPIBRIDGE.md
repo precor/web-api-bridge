@@ -17,14 +17,9 @@
 
 ## WebApiBridge
 
-`WebApiBridge` is a plain JavaScript class that can be used in a React Native application and
-in a web app running in a [react-native-webview][13]
-to support a function call API between the two. [React Native WebView][14]
-will also still work. It can also be used as an IPC mechanism between other windows, for example,
-a web page and an iframe. The intention is for this code to be used in a web app that is using
-either a framework or pure JavaScript so framework code was kept out of this class.
-
-WebApiBridge works by passing `Message` objects between Javascript processes.
+`WebApiBridge` provides a function call API interface between Javascript processes that pass `MessageEvent`
+objects such as a a web page and an iframe or a React Native application and
+a web app running in a [react-native-webview][13].
 
 ### Examples
 
@@ -168,25 +163,24 @@ from the other side.
 
 #### Parameters
 
--   `event` **[object][15]** Incomming event.
--   `data` **[string][16]** The incoming data received, which is a stingified JSON
+-   `event` **[object][14]** Incomming event.
+-   `data` **[string][15]** The incoming data received, which is a stingified JSON
     message. Defaults to `event.nativeEvent.data`, which is correct for React Native
     but needs to be overridden for web apps with `event.data`. (optional, default `event.nativeEvent.data`)
 
 ### send
 
 Invoke a function on the remote.
-Returns a `Promise` object.
 
 #### Parameters
 
--   `targetFunc` **[string][16]** A string of the name of the api function to execute.
--   `args` **[Array][17]** An array of parameters to be passsed to the `targetFun`.
--   `wantResult` **[boolean][18]** Boolean to indicate if a `Promise` should be `fullfilled`
+-   `targetFunc` **[string][15]** A string of the name of the api function to execute.
+-   `args` **[Array][16]** An array of parameters to be passsed to the `targetFun`.
+-   `wantResult` **[boolean][17]** Boolean to indicate if a `Promise` should be `fullfilled`
        or `rejected` after the remote api completes the call. If `false` then no `Promise`
        will be `fullfilled`. (optional, default `false`)
 
-Returns **[Promise][19]** Promise object if `wantResult` is `true`, `null` if not.
+Returns **[Promise][18]** if `wantResult` is `true`, `void` if not.
 
 [1]: #webapibridge
 
@@ -214,14 +208,12 @@ Returns **[Promise][19]** Promise object if `wantResult` is `true`, `null` if no
 
 [13]: https://github.com/react-native-community/react-native-webview
 
-[14]: https://facebook.github.io/react-native/docs/webview.html
+[14]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
 
-[15]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+[15]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
 
-[16]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+[16]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
 
-[17]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+[17]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
 
-[18]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
-
-[19]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
+[18]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise

@@ -15,7 +15,6 @@
     "test": "jest src --watchAll",
     "test:build": "jest lib",
     "coverage": "jest --coverage src",
-    "doc:html": "documentation build ./src/** -f html -o docs/html",
     "doc:md": "documentation build ./src/index.js -f md -o docs/WEBAPIBRIDGE.md"
   },
   "devDependencies": {
