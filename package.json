@@ -11,32 +11,31 @@
     "url": "https://github.com/precor/web-api-bridge.git"
   },
   "scripts": {
-    "build": "npx babel --copy-files src --out-dir lib",
+    "build": "rimraf lib && npx babel --copy-files src --out-dir lib",
     "test": "jest src --watchAll",
     "test:build": "jest lib",
     "coverage": "jest --coverage src",
-    "doc:md": "documentation build ./src/index.js -f md -o docs/WEBAPIBRIDGE.md"
+    "doc:md": "documentation build ./src/index.js -f md -o docs/WEBAPIBRIDGE.md",
+    "lint": "eslint src"
   },
   "devDependencies": {
-    "@babel/cli": "^7.5.5",
-    "@babel/core": "^7.5.5",
-    "@babel/polyfill": "^7.4.4",
-    "@babel/preset-env": "^7.5.5",
-    "babel-eslint": "^10.0.2",
-    "documentation": "^12.1.1",
-    "eslint": "^6.1.0",
-    "eslint-config-airbnb": "^18.0.1",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-react": "^7.14.3",
-    "eslint-plugin-react-hooks": "^1.7.0",
-    "jest": "^24.8.0"
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/polyfill": "^7.8.7",
+    "@babel/preset-env": "^7.9.0",
+    "babel-eslint": "^10.1.0",
+    "documentation": "^12.2.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "jest": "^25.2.7",
+    "prop-types": "^15.7.2",
+    "rimraf": "^3.0.2"
   },
   "dependencies": {},
   "jest": {
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/examples/"
+    "roots": [
+      "<rootDir>/src"
     ]
   }
 }

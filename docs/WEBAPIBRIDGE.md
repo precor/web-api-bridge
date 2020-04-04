@@ -17,9 +17,9 @@
 
 ## WebApiBridge
 
-`WebApiBridge` provides a function call API interface between Javascript processes that pass `MessageEvent`
-objects such as a a web page and an iframe or a React Native application and
-a web app running in a [react-native-webview][13].
+`WebApiBridge` provides a function call API interface between Javascript processes
+that pass `MessageEvent` objects such as a a web page and an iframe or a React Native
+application and a web app running in a [react-native-webview][13].
 
 ### Examples
 
