@@ -1,13 +1,21 @@
 import WebApiBridge from '@precor/web-api-bridge';
-import { send, setSend } from './apis/Send';
+import { send, setSend } from './apis/send';
 
 class WebAppLibrary {
   constructor() {
     this.webApiBridge = new WebApiBridge();
     this.webApiBridge.target = window.parent;
-    const originSubstring = (process.env.NODE_ENV === 'development') ? ':3000' : 'https://known.webapp.lib.origin';
-    const targetOrigin = (process.env.NODE_ENV === 'development') ? '*' : 'https://known.webapp.lib.origin';
-    console.log(`default origin: ${originSubstring}, targetOrigin : ${targetOrigin}`);
+    const originSubstring =
+      process.env.NODE_ENV === 'development'
+        ? ':3000'
+        : 'https://known.webapp.lib.origin';
+    const targetOrigin =
+      process.env.NODE_ENV === 'development'
+        ? '*'
+        : 'https://known.webapp.lib.origin';
+    console.log(
+      `default origin: ${originSubstring}, targetOrigin : ${targetOrigin}`,
+    );
     this.webApiBridge.origin = originSubstring;
     this.webApiBridge.targetOrigin = targetOrigin;
     setSend(this.webApiBridge.send.bind(this.webApiBridge));
@@ -19,7 +27,7 @@ class WebAppLibrary {
     if (event && event.source === this.webApiBridge.target) {
       this.webApiBridge.onMessage(event, event.data);
     }
-  }
+  };
 
   startApis = (origin, logMessages) => {
     if (origin) {
@@ -36,7 +44,7 @@ class WebAppLibrary {
       });
       return Promise.resolve(libInfo);
     });
-  }
+  };
 
   stopApis = () => {
     this.webApiBridge.apis.forEach((api) => {
@@ -49,7 +57,7 @@ class WebAppLibrary {
       }
     });
     window.removeEventListener('message', this.messageListener);
-  }
+  };
 }
 
 const webAppLibrary = new WebAppLibrary();

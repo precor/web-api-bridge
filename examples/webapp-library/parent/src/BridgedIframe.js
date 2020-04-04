@@ -9,11 +9,15 @@ const createLibInstance = ({ webApiBridge, apis }) => ({
   apis,
   findApiOfType(apiName) {
     // eslint-disable-next-line no-use-before-define
-    return this.webApiBridge.apis.find((api) => (api instanceof apiMap[apiName]));
+    return this.webApiBridge.apis.find((api) => api instanceof apiMap[apiName]);
   },
 });
 
-const registeredSend = (bridgeSend, outgoingCalls) => (funcName, args, wantResponse) => {
+const registeredSend = (bridgeSend, outgoingCalls) => (
+  funcName,
+  args,
+  wantResponse,
+) => {
   if (outgoingCalls[funcName]) {
     return bridgeSend(funcName, args, wantResponse);
   }
@@ -32,7 +36,7 @@ class libInstances {
       const api = instance.findApiOfType(apiName);
       if (api) fn(api);
     });
-  }
+  };
 }
 
 class Common {
@@ -45,7 +49,7 @@ class Common {
 
   setSend = (bridgeSend) => {
     this.send = registeredSend(bridgeSend, this.outgoingCalls);
-  }
+  };
 
   displayBlur = (blur) => {
     this.send('displayBlur', [blur], false);
@@ -63,10 +67,9 @@ class Api1 {
     };
   }
 
-
   setSend = (bridgeSend) => {
     this.send = registeredSend(bridgeSend, this.outgoingCalls);
-  }
+  };
 
   photoSelected = (id) => {
     this.send('photoSelected', [id], false);
@@ -80,14 +83,15 @@ class Api2 {
     };
   }
 
-
   setSend = (bridgeSend) => {
     this.send = registeredSend(bridgeSend, this.outgoingCalls);
-  }
+  };
 
   photoClicked = (id) => {
     libInstances.executeOnType('Api1', (api) => api.photoSelected(id));
-    libInstances.executeOnType('Api2', (api) => { if (api !== this) api.displayNewPhoto(); });
+    libInstances.executeOnType('Api2', (api) => {
+      if (api !== this) api.displayNewPhoto();
+    });
   };
 
   displayNewPhoto = () => {
@@ -99,7 +103,9 @@ class Api3 {
   setSend = () => {};
 
   setGrayscale = (grayscale) => {
-    libInstances.executeOnType('Common', (api) => api.displayGrayscale(grayscale));
+    libInstances.executeOnType('Common', (api) =>
+      api.displayGrayscale(grayscale),
+    );
   };
 
   setBlur = (blur) => {
@@ -108,7 +114,10 @@ class Api3 {
 }
 
 const apiMap = {
-  Common, Api1, Api2, Api3,
+  Common,
+  Api1,
+  Api2,
+  Api3,
 };
 
 class BridgedIframe extends React.Component {
@@ -122,7 +131,9 @@ class BridgedIframe extends React.Component {
     this.webApiBridge.origin = url.origin;
     this.webApiBridge.targetOrigin = url.origin;
     const send = this.webApiBridge.send.bind(this.webApiBridge);
-    libInstances.add(createLibInstance({ webApiBridge: this.webApiBridge, apis }));
+    libInstances.add(
+      createLibInstance({ webApiBridge: this.webApiBridge, apis }),
+    );
     window.addEventListener('message', this.messageListener);
     this.webApiBridge.apis = apis.map((apiClassName) => {
       const api = new apiMap[apiClassName]();
@@ -150,21 +161,20 @@ class BridgedIframe extends React.Component {
     }
   };
 
-  startApis = () => (
-    new Promise((resolve) => resolve({ type: this.type, apis: this.apis }))
-  );
+  startApis = () =>
+    new Promise((resolve) => resolve({ type: this.type, apis: this.apis }));
 
-  registerCallback = (funcName, implemented) => (
+  registerCallback = (funcName, implemented) =>
     new Promise((resolve) => {
-      const api = this.webApiBridge.apis.find((apiInstance) => (
-        apiInstance.outgoingCalls[funcName]) !== undefined);
+      const api = this.webApiBridge.apis.find(
+        (apiInstance) => apiInstance.outgoingCalls[funcName] !== undefined,
+      );
       if (!api) {
         throw new Error(`registerCallback failed, ${funcName} does not exist`);
       }
       api.outgoingCalls[funcName] = implemented;
       resolve();
-    })
-  );
+    });
 
   setIframe = (iframe) => {
     if (!iframe || this.iframe) {
@@ -175,15 +185,15 @@ class BridgedIframe extends React.Component {
   };
 
   render() {
-    const {
-      src, type, apis, ...rest
-    } = this.props;
+    const { src, type, apis, ...rest } = this.props;
     console.log(`render iframe: ${src}`);
     return (
       <iframe
         src={src}
         title={src}
-        ref={(iframe) => { this.setIframe(iframe); }}
+        ref={(iframe) => {
+          this.setIframe(iframe);
+        }}
         scrolling="no"
         {...rest}
       />

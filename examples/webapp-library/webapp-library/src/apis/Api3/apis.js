@@ -1,4 +1,4 @@
-import { send } from '../Send';
+import { send } from '../send';
 
 export const setGrayscale = (grayscale) => {
   send('setGrayscale', [grayscale], false);

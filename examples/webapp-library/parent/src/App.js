@@ -2,15 +2,35 @@ import React from 'react';
 import BridgedIframe from './BridgedIframe';
 import './App.css';
 
-const LibType1App = { src: process.env.REACT_APP_WEBAPP1, type: 'LibType1', apis: ['Common', 'Api1'] };
+const LibType1App = {
+  src: process.env.REACT_APP_WEBAPP1,
+  type: 'LibType1',
+  apis: ['Common', 'Api1'],
+};
 
 const LibType2Apps = [
   // two instances of webapp1, the first one can set blur and grayscale
-  { src: process.env.REACT_APP_WEBAPP1, type: 'LibType2', apis: ['Common', 'Api2', 'Api3'] },
-  { src: process.env.REACT_APP_WEBAPP1, type: 'LibType2', apis: ['Common', 'Api2'] },
+  {
+    src: process.env.REACT_APP_WEBAPP1,
+    type: 'LibType2',
+    apis: ['Common', 'Api2', 'Api3'],
+  },
+  {
+    src: process.env.REACT_APP_WEBAPP1,
+    type: 'LibType2',
+    apis: ['Common', 'Api2'],
+  },
   // two instances of webapp2
-  { src: process.env.REACT_APP_WEBAPP2, type: 'LibType2', apis: ['Common', 'Api2'] },
-  { src: process.env.REACT_APP_WEBAPP2, type: 'LibType2', apis: ['Common', 'Api2'] },
+  {
+    src: process.env.REACT_APP_WEBAPP2,
+    type: 'LibType2',
+    apis: ['Common', 'Api2'],
+  },
+  {
+    src: process.env.REACT_APP_WEBAPP2,
+    type: 'LibType2',
+    apis: ['Common', 'Api2'],
+  },
 ];
 
 const App = () => {
@@ -38,9 +58,7 @@ const App = () => {
             />
           ))}
         </div>
-        <div className="overlay-text">
-          Click on one of the 4 photos
-        </div>
+        <div className="overlay-text">Click on one of the 4 photos</div>
       </div>
     </div>
   );

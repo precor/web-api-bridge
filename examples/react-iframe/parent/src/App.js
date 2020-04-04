@@ -5,7 +5,6 @@ import './App.css';
 const iframeUrl = process.env.REACT_APP_WEBAPP;
 const iframeOrigin = new URL(process.env.REACT_APP_WEBAPP).origin;
 
-
 class MyMainApi {
   constructor(send) {
     this.send = send;
@@ -16,23 +15,26 @@ class MyMainApi {
     this.send('welcome', [message], false);
   };
 
-  howOldAreYou = () => (
+  howOldAreYou = () =>
     new Promise((resolve) => {
       console.log('sending age to iframe');
       resolve(3);
-    })
-  );
+    });
 }
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.webApiBridge = new WebApiBridge();
-    this.myMainApi = new MyMainApi(this.webApiBridge.send.bind(this.webApiBridge));
+    this.myMainApi = new MyMainApi(
+      this.webApiBridge.send.bind(this.webApiBridge),
+    );
     this.webApiBridge.origin = iframeOrigin;
     this.webApiBridge.targetOrigin = iframeOrigin;
     this.webApiBridge.apis = [this.myMainApi];
-    window.addEventListener('message', event => this.webApiBridge.onMessage(event, event.data));
+    window.addEventListener('message', (event) =>
+      this.webApiBridge.onMessage(event, event.data),
+    );
     // enable to log all webapp messsages:
     // this.webApiBridge.listener = (message) => { console.log(message); };
   }
@@ -47,7 +49,7 @@ class App extends Component {
       console.log('iframeUrl loaded');
       this.myMainApi.welcome('hello iframe');
     };
-  }
+  };
 
   render() {
     return (
@@ -56,7 +58,9 @@ class App extends Component {
           <iframe
             src={iframeUrl}
             title="iframe communications"
-            ref={(iframe) => { this.setIframe(iframe); }}
+            ref={(iframe) => {
+              this.setIframe(iframe);
+            }}
           />
           <p>parent window</p>
         </header>

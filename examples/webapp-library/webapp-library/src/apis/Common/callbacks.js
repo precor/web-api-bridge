@@ -5,6 +5,5 @@ export const incomingCalls = {
   displayGrayscale: null,
 };
 
-export const setCallback = (funcName, implementation) => (
-  registerCallback(incomingCalls, funcName, implementation)
-);
+export const setCallback = (funcName, implementation) =>
+  registerCallback(incomingCalls, funcName, implementation);

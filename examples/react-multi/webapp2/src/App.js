@@ -5,9 +5,11 @@ import './App.css';
 const parentOrigin = process.env.REACT_APP_PARENT_ORIGIN;
 
 const getPhoto = async (id) => {
-  const response = await fetch((id)
-    ? `https://picsum.photos/id/${id}/${window.innerWidth}/${window.innerHeight}/`
-    : `https://picsum.photos/${window.innerWidth}/${window.innerHeight}/`);
+  const response = await fetch(
+    id
+      ? `https://picsum.photos/id/${id}/${window.innerWidth}/${window.innerHeight}/`
+      : `https://picsum.photos/${window.innerWidth}/${window.innerHeight}/`,
+  );
   const newId = response.url.split('/')[4];
   const imageBlob = await response.blob();
   return { id: newId, imageUrl: URL.createObjectURL(imageBlob) };
@@ -24,34 +26,38 @@ class App extends Component {
     this.webApiBridge.targetOrigin = parentOrigin;
     this.send = this.webApiBridge.send.bind(this.webApiBridge);
     this.webApiBridge.apis = [this];
-    window.addEventListener('message', event => this.webApiBridge.onMessage(event, event.data));
+    window.addEventListener('message', (event) =>
+      this.webApiBridge.onMessage(event, event.data),
+    );
     this.state = {};
     this.displayNewPhoto();
     window.onresize = () => {
       const { id } = this.state;
-      getPhoto(id).then((photoInfo) => { this.setState(photoInfo); });
+      getPhoto(id).then((photoInfo) => {
+        this.setState(photoInfo);
+      });
     };
     // enable to log all webapp messsages:
     // this.webApiBridge.listener = (message) => { console.log(message); };
   }
 
   displayNewPhoto = () => {
-    getPhoto().then((photoInfo) => { this.setState(photoInfo); });
-  }
+    getPhoto().then((photoInfo) => {
+      this.setState(photoInfo);
+    });
+  };
 
   photoClicked = () => {
     const { id } = this.state;
     this.send('photoClicked', [id], false);
-  }
+  };
 
   render() {
     console.log('render webapp2');
     const { imageUrl } = this.state;
     if (!imageUrl) return null;
 
-    return (
-      <img src={imageUrl} alt="" onClick={this.photoClicked} />
-    );
+    return <img src={imageUrl} alt="" onClick={this.photoClicked} />;
   }
 }
 

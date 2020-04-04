@@ -5,9 +5,11 @@ import './App.css';
 const parentOrigin = process.env.REACT_APP_PARENT_ORIGIN;
 
 const getPhoto = async (id) => {
-  const response = await fetch((id)
-    ? `https://picsum.photos/id/${id}/${window.innerWidth}/${window.innerHeight}/`
-    : `https://picsum.photos/${window.innerWidth}/${window.innerHeight}/`);
+  const response = await fetch(
+    id
+      ? `https://picsum.photos/id/${id}/${window.innerWidth}/${window.innerHeight}/`
+      : `https://picsum.photos/${window.innerWidth}/${window.innerHeight}/`,
+  );
   const newId = response.url.split('/')[4];
   const imageBlob = await response.blob();
   return { id: newId, imageUrl: URL.createObjectURL(imageBlob) };
@@ -28,7 +30,7 @@ class Page1 extends Component {
   }
 
   photoSelected = (id) => {
-    getPhoto(id).then(photoInfo => this.setState(photoInfo));
+    getPhoto(id).then((photoInfo) => this.setState(photoInfo));
   };
 
   render() {
@@ -36,9 +38,7 @@ class Page1 extends Component {
     const { imageUrl } = this.state;
     if (!imageUrl) return null;
 
-    return (
-      <img src={imageUrl} alt="" />
-    );
+    return <img src={imageUrl} alt="" />;
   }
 }
 
@@ -52,27 +52,27 @@ class Page2 extends Component {
     this.displayNewPhoto();
     window.onresize = () => {
       const { id } = this.state;
-      getPhoto(id).then(photoInfo => this.setState(photoInfo));
+      getPhoto(id).then((photoInfo) => this.setState(photoInfo));
     };
   }
 
   displayNewPhoto = () => {
-    getPhoto().then((photoInfo) => { this.setState(photoInfo); });
-  }
+    getPhoto().then((photoInfo) => {
+      this.setState(photoInfo);
+    });
+  };
 
   photoClicked = () => {
     const { id } = this.state;
     this.send('photoClicked', [id], false);
-  }
+  };
 
   render() {
     console.log('render Page2');
     const { imageUrl } = this.state;
     if (!imageUrl) return null;
 
-    return (
-      <img src={imageUrl} alt="" onClick={this.photoClicked} />
-    );
+    return <img src={imageUrl} alt="" onClick={this.photoClicked} />;
   }
 }
 
@@ -93,26 +93,23 @@ class App extends Component {
     this.webApiBridge.origin = parentOrigin;
     this.webApiBridge.targetOrigin = parentOrigin;
     this.send = this.webApiBridge.send.bind(this.webApiBridge);
-    window.addEventListener('message', event => this.webApiBridge.onMessage(event, event.data));
+    window.addEventListener('message', (event) =>
+      this.webApiBridge.onMessage(event, event.data),
+    );
     // enable to log all webapp messsages:
     // this.webApiBridge.listener = (message) => { console.log(message); };
   }
 
   setApis = (apis) => {
     this.webApiBridge.apis = apis;
-  }
+  };
 
   render() {
     if (!window.location.hash) return null;
     console.log(`webapp1 render ${window.location.hash.substr(1)}`);
     const PageComponent = apiComponents[window.location.hash.substr(1)];
 
-    return (
-      <PageComponent
-        setApis={this.setApis}
-        send={this.send}
-      />
-    );
+    return <PageComponent setApis={this.setApis} send={this.send} />;
   }
 }
 

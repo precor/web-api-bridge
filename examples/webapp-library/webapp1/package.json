@@ -4,10 +4,11 @@
   "private": true,
   "homepage": ".",
   "dependencies": {
+    "@precor/web-api-bridge": "^2.1.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "^3.4.1",
-    "webapp-library": "../webapp-library"
+    "webapp-library": "../webapp-library/lib"
   },
   "scripts": {
     "start": "cross-env PORT=3200 BROWSER=none react-scripts start",
@@ -35,6 +36,7 @@
   "devDependencies": {
     "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
-    "eslint-plugin-react-hooks": "^3.0.0"
+    "eslint-plugin-react-hooks": "^3.0.0",
+    "prettier": "^2.0.2"
   }
 }

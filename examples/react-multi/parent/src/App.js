@@ -40,12 +40,15 @@ class Api2 {
   };
 
   photoClicked = (id) => {
-    const api1Iframe = bridgedIframes.find(bridgedIframe => (
-      bridgedIframe.props.api instanceof Api1
-    ));
+    const api1Iframe = bridgedIframes.find(
+      (bridgedIframe) => bridgedIframe.props.api instanceof Api1,
+    );
     api1Iframe.props.api.photoSelected(id);
     bridgedIframes.forEach((bridgedIframe) => {
-      if (bridgedIframe.props.api !== this && bridgedIframe.props.api instanceof Api2) {
+      if (
+        bridgedIframe.props.api !== this &&
+        bridgedIframe.props.api instanceof Api2
+      ) {
         bridgedIframe.props.api.displayNewPhoto();
       }
     });
@@ -80,7 +83,7 @@ class BridgedIframe extends Component {
     this.iframe.onload = () => {
       console.log(`${iframe.src} loaded`);
     };
-  }
+  };
 
   render() {
     const { src, api, ...rest } = this.props;
@@ -90,7 +93,9 @@ class BridgedIframe extends Component {
       <iframe
         src={src}
         title={src}
-        ref={(iframe) => { this.setIframe(iframe); }}
+        ref={(iframe) => {
+          this.setIframe(iframe);
+        }}
         scrolling="no"
         {...rest}
       />
@@ -120,9 +125,7 @@ const App = () => {
             />
           ))}
         </div>
-        <div className="overlay-text">
-          Click on one of the 4 photos
-        </div>
+        <div className="overlay-text">Click on one of the 4 photos</div>
       </div>
     </div>
   );
