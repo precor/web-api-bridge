@@ -15,7 +15,7 @@
     "test": "jest src --watchAll",
     "test:build": "jest lib",
     "coverage": "jest --coverage src",
-    "doc:md": "documentation build ./src/index.js -f md -o docs/WEBAPIBRIDGE.md",
+    "doc:md": "rimraf docs/* && documentation build ./src/index.js -f md -o docs/WEBAPIBRIDGE.md",
     "lint": "eslint src"
   },
   "devDependencies": {

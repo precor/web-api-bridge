@@ -115,9 +115,8 @@ class WebApiBridge {
     this.useReactNativeWebView = undefined;
 
     /**
-     * Listener functions can monitor all `Message` objects exchanged
-     * between `WebApiBridge` objects. Listener functions are attached to `WebApiBridge` instances
-     * by setting the `listener` property.
+     * Property that can be set to a function that can monitor all `Message` objects exchanged
+     * between `WebApiBridge` objects.
      */
     this.listener = null;
 
@@ -125,15 +124,15 @@ class WebApiBridge {
      * Property for validating the origin of received messages. The property is set to a substring
      * of the origin to be matched in browser windows. This makes it easy to provide some checking
      * in development mode, for example, `':3000'` will allow messages from any server using port
-     * 3000. By default it's set to `''`, which will allow messages from any origin. This field
-     * should be set as restrictrively as possible. e.g. `'https://www.mydomain.com:3000'`. Note
+     * 3000. By default it's set to `''`, which will allow messages from any origin. This property
+     * should be set as restrictively as possible. e.g. `'https://www.mydomain.com:3000'`. Note
      * that his property is irrelevant in React Native WebViews.
      */
     this.origin = '';
 
     /**
      * Property for specifying the origin of the target window in messages sent to browser windows.
-     * By default it's set to `'*'`, which will allow messages to any document. This field
+     * By default it's set to `'*'`, which will allow messages to any document. This property
      * should be set as restrictrively as possible. e.g. `'https://www.mydomain.com:3000'`. Note
      * that his property is irrelevant in React Native WebViews.
      */
@@ -145,13 +144,11 @@ class WebApiBridge {
 
   newMsgId() {
     this.currentId += 1;
-    return (this.currentId % Number.MAX_SAFE_INTEGER);
+    return this.currentId % Number.MAX_SAFE_INTEGER;
   }
 
   handleResponse(response) {
-    const {
-      msgId, args, error,
-    } = response;
+    const { msgId, args, error } = response;
     if (this.sendCompletions[msgId]) {
       if (error) {
         this.sendCompletions[msgId].reject(new Error(error));
@@ -186,7 +183,8 @@ class WebApiBridge {
         throw new Error('function does not exist');
       }
       if (request.wantResult) {
-        api[request.targetFunc].apply(this, request.args)
+        api[request.targetFunc]
+          .apply(this, request.args)
           .then((result) => {
             response.args = [result];
             this.sendResponse(response);
@@ -217,7 +215,9 @@ class WebApiBridge {
    */
   onMessage(event, data = event.nativeEvent.data) {
     if (event.origin && event.origin.search(this.origin) === -1) return;
-    if (typeof data !== 'string' || data.indexOf('"targetFunc":') === -1) return;
+    if (typeof data !== 'string' || data.indexOf('"targetFunc":') === -1) {
+      return;
+    }
     let message;
     try {
       message = JSON.parse(data);
@@ -257,7 +257,12 @@ class WebApiBridge {
   send(targetFunc, args, wantResult = false) {
     const msgId = this.newMsgId();
     const message = {
-      type: 'request', wantResult, targetFunc, args, msgId, error: null,
+      type: 'request',
+      wantResult,
+      targetFunc,
+      args,
+      msgId,
+      error: null,
     };
     if (wantResult) {
       return new Promise((resolve, reject) => {

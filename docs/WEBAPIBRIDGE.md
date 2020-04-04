@@ -136,23 +136,22 @@ Property that should be truthy for a webview using
 
 ### listener
 
-Listener functions can monitor all `Message` objects exchanged
-between `WebApiBridge` objects. Listener functions are attached to `WebApiBridge` instances
-by setting the `listener` property.
+Property that can be set to a function that can monitor all `Message` objects exchanged
+between `WebApiBridge` objects.
 
 ### origin
 
 Property for validating the origin of received messages. The property is set to a substring
 of the origin to be matched in browser windows. This makes it easy to provide some checking
 in development mode, for example, `':3000'` will allow messages from any server using port
-3000\. By default it's set to `''`, which will allow messages from any origin. This field
-should be set as restrictrively as possible. e.g. `'https://www.mydomain.com:3000'`. Note
+3000\. By default it's set to `''`, which will allow messages from any origin. This property
+should be set as restrictively as possible. e.g. `'https://www.mydomain.com:3000'`. Note
 that his property is irrelevant in React Native WebViews.
 
 ### targetOrigin
 
 Property for specifying the origin of the target window in messages sent to browser windows.
-By default it's set to `'*'`, which will allow messages to any document. This field
+By default it's set to `'*'`, which will allow messages to any document. This property
 should be set as restrictrively as possible. e.g. `'https://www.mydomain.com:3000'`. Note
 that his property is irrelevant in React Native WebViews.
 

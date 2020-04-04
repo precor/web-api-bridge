@@ -10,17 +10,18 @@ const eventOriginTest = { origin: 'no match', nativeEvent: { data: 'dummy' } };
 class TestAPI {
   constructor() {
     this.testFunc = jest.fn();
-    this.resultFunc = () => (
+    this.resultFunc = () =>
       new Promise((resolve) => {
         resolve(apiResultObject);
-      })
-    );
-    this.errorFunc = () => { throw new Error(errorMessage); };
-    this.errorResultFunc = () => (
-      new Promise((resolve, reject) => {
+      });
+    this.errorFunc = () => {
+      throw new Error(errorMessage);
+    };
+    this.errorResultFunc = () => {
+      return new Promise((resolve, reject) => {
         reject(new Error(errorMessage));
-      })
-    );
+      });
+    };
   }
 }
 
@@ -87,14 +88,14 @@ describe('WebApiBridge', () => {
     expect(console.warn).toHaveBeenCalled();
   });
 
-  it('displays a console.warn(), given an incomming message type is not a \'request\' or \'response\'', () => {
+  it("displays a console.warn(), given an incomming message type is not a 'request' or 'response'", () => {
     console.warn = jest.fn();
     const badTypeMessage = { ...testFuncMsg, type: 'invalid' };
     wab.onMessage('message', JSON.stringify(badTypeMessage));
     expect(console.warn).toHaveBeenCalled();
   });
 
-  it('calls an api function and doesn\'t send response, given a request doesn\'t require a result', () => {
+  it("calls an api function and doesn't send response, given a request doesn't require a result", () => {
     wab.onMessage('message', JSON.stringify(testFuncMsg));
     expect(testAPI.testFunc).toHaveBeenCalled();
     expect(testTarget.postMessage).not.toHaveBeenCalled();
@@ -103,37 +104,56 @@ describe('WebApiBridge', () => {
   it('sends an error, given a request asking for result on api call not returning a promise', () => {
     const wantResultMsg = { ...testFuncMsg, wantResult: true };
     const expectedResultMsg = {
-      ...wantResultMsg, type: 'response', args: [], error: 'Cannot read property \'then\' of undefined',
+      ...wantResultMsg,
+      type: 'response',
+      args: [],
+      error: "Cannot read property 'then' of undefined",
     };
     wab.onMessage('message', JSON.stringify(wantResultMsg));
     expect(testAPI.testFunc).toHaveBeenCalled();
-    expect(testTarget.postMessage).toHaveBeenCalledWith(JSON.stringify(expectedResultMsg), '*');
+    expect(testTarget.postMessage).toHaveBeenCalledWith(
+      JSON.stringify(expectedResultMsg),
+      '*',
+    );
   });
 
   it('sends a result using ReactNativeWebView, given a response coming from a ReactNativeWebView', () => {
     const wantResultMsg = { ...testFuncMsg, wantResult: true };
     const expectedResultMsg = {
-      ...wantResultMsg, type: 'response', args: [], error: 'Cannot read property \'then\' of undefined',
+      ...wantResultMsg,
+      type: 'response',
+      args: [],
+      error: "Cannot read property 'then' of undefined",
     };
     wab.useReactNativeWebView = true;
     wab.onMessage('message', JSON.stringify(wantResultMsg));
     expect(testAPI.testFunc).toHaveBeenCalled();
-    expect(testTarget.ReactNativeWebView.postMessage)
-      .toHaveBeenCalledWith(JSON.stringify(expectedResultMsg));
+    expect(testTarget.ReactNativeWebView.postMessage).toHaveBeenCalledWith(
+      JSON.stringify(expectedResultMsg),
+    );
   });
 
   it('calls an api function with params, given an incoming request has params', () => {
     const args = [5, { key: 'value' }];
     const argRequestMsg = {
-      ...testFuncMsg, args,
+      ...testFuncMsg,
+      args,
     };
     wab.onMessage('message', JSON.stringify(argRequestMsg));
     expect(testAPI.testFunc).toHaveBeenCalledWith(...args);
   });
 
   it('returns a result from an api call, given an incoming request with wantResult is true', (done) => {
-    const argRequestMsg = { ...testFuncMsg, targetFunc: 'resultFunc', wantResult: true };
-    const expectedResultMsg = { ...argRequestMsg, type: 'response', args: [apiResultObject] };
+    const argRequestMsg = {
+      ...testFuncMsg,
+      targetFunc: 'resultFunc',
+      wantResult: true,
+    };
+    const expectedResultMsg = {
+      ...argRequestMsg,
+      type: 'response',
+      args: [apiResultObject],
+    };
     wab.onMessage('message', JSON.stringify(argRequestMsg));
 
     testTarget.postMessage = (result, targetOrigin) => {
@@ -144,22 +164,43 @@ describe('WebApiBridge', () => {
   });
 
   it('responds with an error, given results required to non-existent api function', () => {
-    const argRequestMsg = { ...testFuncMsg, targetFunc: 'nonexistentFunc', wantResult: true };
-    const expectedResultMsg = { ...argRequestMsg, type: 'response', error: 'function does not exist' };
+    const argRequestMsg = {
+      ...testFuncMsg,
+      targetFunc: 'nonexistentFunc',
+      wantResult: true,
+    };
+    const expectedResultMsg = {
+      ...argRequestMsg,
+      type: 'response',
+      error: 'function does not exist',
+    };
     wab.onMessage('message', JSON.stringify(argRequestMsg));
-    expect(testTarget.postMessage).toHaveBeenCalledWith(JSON.stringify(expectedResultMsg), '*');
+    expect(testTarget.postMessage).toHaveBeenCalledWith(
+      JSON.stringify(expectedResultMsg),
+      '*',
+    );
   });
 
   it('responds with an error, given no results required to non-existent api function', () => {
     const argRequestMsg = { ...testFuncMsg, targetFunc: 'nonexistentFunc' };
-    const expectedResultMsg = { ...argRequestMsg, type: 'response', error: 'function does not exist' };
+    const expectedResultMsg = {
+      ...argRequestMsg,
+      type: 'response',
+      error: 'function does not exist',
+    };
     wab.onMessage('message', JSON.stringify(argRequestMsg));
-    expect(testTarget.postMessage).toHaveBeenCalledWith(JSON.stringify(expectedResultMsg), '*');
+    expect(testTarget.postMessage).toHaveBeenCalledWith(
+      JSON.stringify(expectedResultMsg),
+      '*',
+    );
   });
 
-  it('Does not display a warn, given remote responds with \'function does not exist\' error', () => {
+  it("Does not display a warn, given remote responds with 'function does not exist' error", () => {
     const argResponseMsg = {
-      ...testFuncMsg, targetFunc: 'nonexistentFunc', type: 'response', error: 'function does not exist',
+      ...testFuncMsg,
+      targetFunc: 'nonexistentFunc',
+      type: 'response',
+      error: 'function does not exist',
     };
     console.warn = jest.fn();
     wab.onMessage('message', JSON.stringify(argResponseMsg));
@@ -168,22 +209,52 @@ describe('WebApiBridge', () => {
 
   it('always responds with an error, given an error is thrown when an api call is made', () => {
     // make sure error is returned if wantResult is true
-    const errRequestMsg = { ...testFuncMsg, targetFunc: 'errorFunc', wantResult: true };
-    const expectedResultMsg = { ...errRequestMsg, type: 'response', error: errorMessage };
+    const errRequestMsg = {
+      ...testFuncMsg,
+      targetFunc: 'errorFunc',
+      wantResult: true,
+    };
+    const expectedResultMsg = {
+      ...errRequestMsg,
+      type: 'response',
+      error: errorMessage,
+    };
     wab.onMessage('message', JSON.stringify(errRequestMsg));
-    expect(testTarget.postMessage).toHaveBeenCalledWith(JSON.stringify(expectedResultMsg), '*');
+    expect(testTarget.postMessage).toHaveBeenCalledWith(
+      JSON.stringify(expectedResultMsg),
+      '*',
+    );
 
     // make sure error is returned if wantResult is false
-    const errDontWantResultMsg = { ...testFuncMsg, msgId: 2, targetFunc: 'errorFunc' };
-    const expectedDontWantResultRespMsg = { ...errDontWantResultMsg, type: 'response', error: errorMessage };
+    const errDontWantResultMsg = {
+      ...testFuncMsg,
+      msgId: 2,
+      targetFunc: 'errorFunc',
+    };
+    const expectedDontWantResultRespMsg = {
+      ...errDontWantResultMsg,
+      type: 'response',
+      error: errorMessage,
+    };
     wab.onMessage('message', JSON.stringify(errDontWantResultMsg));
-    expect(testTarget.postMessage).toHaveBeenCalledWith(JSON.stringify(expectedDontWantResultRespMsg), '*');
+    expect(testTarget.postMessage).toHaveBeenCalledWith(
+      JSON.stringify(expectedDontWantResultRespMsg),
+      '*',
+    );
   });
 
   it('responds with an error, given an error is thrown when an api call promise fails', (done) => {
     // make sure error is returned if wantResult is true
-    const errRequestMsg = { ...testFuncMsg, targetFunc: 'errorResultFunc', wantResult: true };
-    const expectedResultMsg = { ...errRequestMsg, type: 'response', error: errorMessage };
+    const errRequestMsg = {
+      ...testFuncMsg,
+      targetFunc: 'errorResultFunc',
+      wantResult: true,
+    };
+    const expectedResultMsg = {
+      ...errRequestMsg,
+      type: 'response',
+      error: errorMessage,
+    };
     wab.onMessage('message', JSON.stringify(errRequestMsg));
     testTarget.postMessage = (result, targetOrigin) => {
       expect(result).toBe(JSON.stringify(expectedResultMsg));
@@ -199,12 +270,20 @@ describe('WebApiBridge', () => {
     expect(callback).toHaveBeenCalledWith({ ...testFuncMsg, args: [] });
     expect(callback).toHaveBeenCalledTimes(1);
 
-    const wantResultMsg = { ...testFuncMsg, targetFunc: 'resultFunc', wantResult: true };
+    const wantResultMsg = {
+      ...testFuncMsg,
+      targetFunc: 'resultFunc',
+      wantResult: true,
+    };
     wab.onMessage('message', JSON.stringify(wantResultMsg));
 
     testTarget.postMessage = () => {
       expect(callback).toHaveBeenCalledTimes(3);
-      expect(callback).toHaveBeenLastCalledWith({ ...wantResultMsg, type: 'response', args: [apiResultObject] });
+      expect(callback).toHaveBeenLastCalledWith({
+        ...wantResultMsg,
+        type: 'response',
+        args: [apiResultObject],
+      });
       done();
     };
   });
@@ -214,7 +293,10 @@ describe('WebApiBridge', () => {
       secondAPIFunc: jest.fn(),
     };
     wab.apis = [testAPI, secondAPI];
-    const secondAPITestFuncMsg = { ...testFuncMsg, targetFunc: 'secondAPIFunc' };
+    const secondAPITestFuncMsg = {
+      ...testFuncMsg,
+      targetFunc: 'secondAPIFunc',
+    };
 
     wab.onMessage('message', JSON.stringify(secondAPITestFuncMsg));
     expect(secondAPI.secondAPIFunc).toHaveBeenCalled();
@@ -238,19 +320,24 @@ describe('WebApiBridge', () => {
 
   it('sends an api request without requesting a result, given the send says not to', () => {
     expect(wab.send('testFunc', [], false)).toBeNull();
-    expect(JSON.parse(testTarget.postMessage.mock.calls[0][0])).toEqual(testFuncMsg);
+    expect(JSON.parse(testTarget.postMessage.mock.calls[0][0])).toEqual(
+      testFuncMsg,
+    );
   });
 
   it('sends an api request using using ReactNativeWebView, given request from a ReactNativeWebView', () => {
     wab.useReactNativeWebView = true;
     expect(wab.send('testFunc', [], false)).toBeNull();
-    expect(JSON.parse(testTarget.ReactNativeWebView.postMessage.mock.calls[0][0]))
-      .toEqual(testFuncMsg);
+    expect(
+      JSON.parse(testTarget.ReactNativeWebView.postMessage.mock.calls[0][0]),
+    ).toEqual(testFuncMsg);
   });
 
   it('sends an api request without requesting a result by default', () => {
     expect(wab.send('testFunc', [])).toBeNull();
-    expect(JSON.parse(testTarget.postMessage.mock.calls[0][0])).toEqual(testFuncMsg);
+    expect(JSON.parse(testTarget.postMessage.mock.calls[0][0])).toEqual(
+      testFuncMsg,
+    );
   });
 
   it('sends an api request that is resolved without a result, given a response has none', () => {
@@ -259,29 +346,47 @@ describe('WebApiBridge', () => {
       wab.onMessage('message', JSON.stringify(resultFuncMsg));
     });
 
-    return wab.send('testFunc', [], true).then((data) => expect(data).toBe(undefined));
+    return wab
+      .send('testFunc', [], true)
+      .then((data) => expect(data).toBe(undefined));
   });
 
   it('sends an api request that is resolved with a result, given other side returns one', () => {
-    const resultFuncMsg = { ...testFuncMsg, type: 'response', args: [apiResultObject] };
+    const resultFuncMsg = {
+      ...testFuncMsg,
+      type: 'response',
+      args: [apiResultObject],
+    };
     testTarget.postMessage.mockImplementation(() => {
       wab.onMessage('message', JSON.stringify(resultFuncMsg));
     });
 
-    return wab.send('testFunc', [], true).then((data) => expect(data).toEqual(apiResultObject));
+    return wab
+      .send('testFunc', [], true)
+      .then((data) => expect(data).toEqual(apiResultObject));
   });
 
   it('rejects a send Promise, given an error response was received', () => {
-    const resultFuncMsg = { ...testFuncMsg, type: 'response', error: errorMessage };
+    const resultFuncMsg = {
+      ...testFuncMsg,
+      type: 'response',
+      error: errorMessage,
+    };
     testTarget.postMessage.mockImplementation(() => {
       wab.onMessage('message', JSON.stringify(resultFuncMsg));
     });
 
-    return wab.send('resultFunc', [], true).catch((e) => expect(e.message).toEqual(errorMessage));
+    return wab
+      .send('resultFunc', [], true)
+      .catch((e) => expect(e.message).toEqual(errorMessage));
   });
 
   it('displays a warning, given we send an api request that caused a remote error', () => {
-    const resultFuncMsg = { ...testFuncMsg, type: 'response', error: errorMessage };
+    const resultFuncMsg = {
+      ...testFuncMsg,
+      type: 'response',
+      error: errorMessage,
+    };
     testTarget.postMessage.mockImplementation(() => {
       wab.onMessage('message', JSON.stringify(resultFuncMsg));
     });
