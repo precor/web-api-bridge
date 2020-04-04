@@ -5,14 +5,15 @@
   "homepage": ".",
   "dependencies": {
     "@precor/web-api-bridge": "^2.0.0",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-scripts": "2.1.8"
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-scripts": "^3.4.1"
   },
   "scripts": {
     "start": "cross-env PORT=3100 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "lint": "eslint src",
     "deploy:s3": "aws --profile default s3 sync build/ s3://parent.react-multi.com --delete",
     "eject": "react-scripts eject"
   },
@@ -26,6 +27,6 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "cross-env": "^5.2.0"
+    "cross-env": "^7.0.2"
   }
 }

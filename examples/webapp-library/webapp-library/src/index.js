@@ -1,5 +1,5 @@
 import WebApiBridge from '@precor/web-api-bridge';
-import { send, setSend } from './apis/send';
+import { send, setSend } from './apis/Send';
 
 class WebAppLibrary {
   constructor() {
@@ -56,6 +56,3 @@ const webAppLibrary = new WebAppLibrary();
 
 // eslint-disable-next-line import/prefer-default-export
 export const { startApis, stopApis } = webAppLibrary;
-
-export * as libType1 from './LibType1';
-export * as libType2 from './LibType2';
