@@ -9,7 +9,7 @@ const presets = [
         safari: '11.1',
       },
       useBuiltIns: 'usage',
-      corejs: 2,
+      corejs: 3,
     },
   ],
 ];
