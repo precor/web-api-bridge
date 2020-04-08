@@ -1,4 +1,4 @@
-# example/react-iframe
+# examples/react-iframe
 
 [demo](https://precor.github.io/web-api-bridge/examples/react-iframe/DEMO.html)
 

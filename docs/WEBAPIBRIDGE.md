@@ -3,115 +3,22 @@
 ### Table of Contents
 
 -   [WebApiBridge][1]
-    -   [Examples][2]
-    -   [apis][3]
-    -   [target][4]
-    -   [useReactNativeWebView][5]
-    -   [listener][6]
-    -   [origin][7]
-    -   [targetOrigin][8]
-    -   [onMessage][9]
-        -   [Parameters][10]
-    -   [send][11]
-        -   [Parameters][12]
+    -   [apis][2]
+    -   [target][3]
+    -   [useReactNativeWebView][4]
+    -   [listener][5]
+    -   [origin][6]
+    -   [targetOrigin][7]
+    -   [onMessage][8]
+        -   [Parameters][9]
+    -   [send][10]
+        -   [Parameters][11]
 
 ## WebApiBridge
 
 `WebApiBridge` provides a function call API interface between Javascript processes
 that pass `MessageEvent` objects such as a a web page and an iframe or a React Native
-application and a web app running in a [react-native-webview][13].
-
-### Examples
-
-Example React Native API implementation using a `WebApiBridge`.
-
-
-```javascript
-import React from 'react';
-import { WebView } from 'react-native-webview';
-import WebApiBridge from '@precor/web-api-bridge';
-
-class WebViewApi extends React.Component {
-  constructor(props) {
-    super(props);
-    this.webApiBridge = new WebApiBridge();
-    this.onMessage = this.webApiBridge.onMessage.bind(this.webApiBridge);
-    this.webApiBridge.apis = [this]; // could be an array of apis passed as a prop instead
-    props.send(this.webApiBridge.send.bind(this.webApiBridge));
-  }
-
-  set webview(webview) {
-    const { onWebViewRef } = this.props;
-    this.webApiBridge.target = webview;
-    if (onWebViewRef) onWebViewRef(webview);
-  }
-
-  // incoming call
-  myApiCall = (param1, param2) => {
-    return new Promise((resolve) => {
-      resolve('myApiCall Result');
-     });
-  }
-
-  // outgoing call
-  onPartnerNotify = () => {
-    this.send('onPartnerNotify', null, false);
-  }
-
-  render() {
-    return (
-      <WebView
-        originWhitelist={['*']}
-        javaScriptEnabled
-        ref={(webview) => { this.webview = webview; }}
-        onMessage={this.onMessage}
-        scrollEnabled={false}
-        automaticallyAdjustContentInsets={false}
-      />
-    );
-  }
-}
-
-export default WebViewApi;
-```
-
-Example `window` API implementation using a `WebApiBridge`.
-
-
-```javascript
-import WebApiBridge from '@precor/web-api-bridge';
-
-const iOS = (process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent));
-class MyApi
-  constructor() {
-     webApiBridge = new WebApiBridge();
-     webApiBridge.apis = [this];
-     // set-up orgins if not in a webview:
-     // webApiBridge.origin = 'https://www.mydom.com';
-     // webApiBridge.targetOrigin = 'https://www.mydom.com';
-     const eventObj = (iOS) ? window : document; // window if not in a webview
-     eventObj.addEventListener('message', event => webApiBridge.onMessage(event, event.data));
-     // for webview:
-     webApiBridge.target = window;
-     webApiBridge.useReactNativeWebView = true; // webview side only
-     // enable this for non-webview:
-     // webApiBridge.target = window; // use window.parent for an iframe
-  }
-
-   // call with myApi.myApiCall(thing1, thing2).then(result => console.log(result));
-   myApiCall(param1, param2) {
-     webApiBridge.send('myApiCall', [param1, param2], true);
-   }
-
-   onPartnerNotify() {
-     console.log('other side called onPartnerNotify');
-   }
- }
-
-const myApi = new MyApi();
-
-export default myApi;
-```
+application and a web app running in a [react-native-webview][12].
 
 ### apis
 
@@ -125,13 +32,13 @@ in more than one API.
 Property for target object to post messages to the other side. Typically the `window`,
 or a `window.parent` for an iframe in a normal web page. For the `WebView`
 component on the React Native side use the `ref`, and for the web side of
-[react-native-webview][13]
+[react-native-webview][12]
 use `window.parent` for iOS and `window` for Android.
 
 ### useReactNativeWebView
 
 Property that should be truthy for a webview using
-[react-native-webview][13]. When set
+[react-native-webview][12]. When set
 `target.ReactNativeWebView.postMessage` will be used instead of `target.postMessage`.
 
 ### listener
@@ -162,8 +69,8 @@ from the other side.
 
 #### Parameters
 
--   `event` **[object][14]** Incomming event.
--   `data` **[string][15]** The incoming data received, which is a stingified JSON
+-   `event` **[object][13]** Incomming event.
+-   `data` **[string][14]** The incoming data received, which is a stingified JSON
     message. Defaults to `event.nativeEvent.data`, which is correct for React Native
     but needs to be overridden for web apps with `event.data`. (optional, default `event.nativeEvent.data`)
 
@@ -173,46 +80,44 @@ Invoke a function on the remote.
 
 #### Parameters
 
--   `targetFunc` **[string][15]** A string of the name of the api function to execute.
--   `args` **[Array][16]** An array of parameters to be passsed to the `targetFun`.
--   `wantResult` **[boolean][17]** Boolean to indicate if a `Promise` should be `fullfilled`
+-   `targetFunc` **[string][14]** A string of the name of the api function to execute.
+-   `args` **[Array][15]** An array of parameters to be passsed to the `targetFun`.
+-   `wantResult` **[boolean][16]** Boolean to indicate if a `Promise` should be `fullfilled`
        or `rejected` after the remote api completes the call. If `false` then no `Promise`
        will be `fullfilled`. (optional, default `false`)
 
-Returns **[Promise][18]** if `wantResult` is `true`, `void` if not.
+Returns **[Promise][17]** if `wantResult` is `true`, `void` if not.
 
 [1]: #webapibridge
 
-[2]: #examples
+[2]: #apis
 
-[3]: #apis
+[3]: #target
 
-[4]: #target
+[4]: #usereactnativewebview
 
-[5]: #usereactnativewebview
+[5]: #listener
 
-[6]: #listener
+[6]: #origin
 
-[7]: #origin
+[7]: #targetorigin
 
-[8]: #targetorigin
+[8]: #onmessage
 
-[9]: #onmessage
+[9]: #parameters
 
-[10]: #parameters
+[10]: #send
 
-[11]: #send
+[11]: #parameters-1
 
-[12]: #parameters-1
+[12]: https://github.com/react-native-community/react-native-webview
 
-[13]: https://github.com/react-native-community/react-native-webview
+[13]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
 
-[14]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+[14]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
 
-[15]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+[15]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
 
-[16]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+[16]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
 
-[17]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
-
-[18]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
+[17]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
