@@ -22,6 +22,6 @@
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/plugin-proposal-export-namespace-from": "^7.8.3",
     "@babel/preset-env": "^7.9.0",
-    "@precor/web-api-bridge": "^2.1.2"
+    "@precor/web-api-bridge": "^2.1.5"
   }
 }
