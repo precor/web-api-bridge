@@ -4,9 +4,12 @@ import logo from './logo.svg';
 import './App.css';
 
 class MyWebViewApi {
-  constructor(send) {
+  constructor(myWebViewApi) {
     console.log('creating MyWebViewApi');
-    this.send = send;
+    webApiBridge.apis = [this];
+    webApiBridge.useReactNativeWebView = true;
+    webApiBridge.target = window;
+    this.send = webApiBridge.send.bind(webApiBridge);
   }
 
   setOnWelcome = (onWelcome) => {
@@ -26,28 +29,23 @@ class MyWebViewApi {
 }
 
 const webApiBridge = new WebApiBridge();
-const myWebViewApi = new MyWebViewApi(webApiBridge.send.bind(webApiBridge));
-webApiBridge.apis = [myWebViewApi];
-webApiBridge.useReactNativeWebView = true;
-webApiBridge.target = window;
+const myWebViewApi = new MyWebViewApi(webApiBridge);
 
 function App() {
   const [age, setAge] = useState();
   const [welcome, setWelcome] = useState();
 
   useEffect(() => {
-    const iOS =
-      /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    const eventObj = iOS ? window : document;
     myWebViewApi.setOnWelcome(setWelcome);
     const handleMessages = (event) => {
+      console.log(event);
       if (event.origin === '') {
         webApiBridge.onMessage(event, event.data);
       }
     };
     console.log('adding event listener');
-    eventObj.addEventListener('message', handleMessages);
-    return () => eventObj.removeEventListener('message', handleMessages);
+    window.addEventListener('message', handleMessages);
+    return () => window.removeEventListener('message', handleMessages);
   }, []);
 
   useEffect(() => {
@@ -67,7 +65,7 @@ function App() {
         <p>
           {!(welcome && age)
             ? 'waiting...'
-            : `from parent: ${welcome}, I'm: ${age}`}{' '}
+            : `from React Native: ${welcome}, I'm: ${age}`}{' '}
         </p>
       </header>
     </div>
