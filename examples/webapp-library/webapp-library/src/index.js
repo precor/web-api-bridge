@@ -1,5 +1,5 @@
 import WebApiBridge from '@precor/web-api-bridge';
-import { send, setSend } from './apis/send';
+import { send, setSend } from './apis/Send';
 
 class WebAppLibrary {
   constructor() {
