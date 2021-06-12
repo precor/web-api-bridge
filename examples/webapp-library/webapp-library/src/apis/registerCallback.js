@@ -1,4 +1,4 @@
-import { send } from './send';
+import { send } from './Send';
 
 export const registerCallback = (incomingCalls, funcName, implementation) => {
   const incomingApi = incomingCalls;
